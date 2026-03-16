@@ -1,0 +1,9 @@
+---
+description: Struktura projektu – v rootu jen nezbytné soubory, zbytek v adresářích dle best practice daného stacku.
+alwaysApply: true
+---
+
+# Struktura projektu
+
+- **Root** – pouze nezbytné soubory (např. README, konfigurace, .gitignore, package.json).
+- Ostatní obsah do adresářů podle **best practice použitého stacku** (React Native, web, backend, …). Nové soubory neukládat do rootu.

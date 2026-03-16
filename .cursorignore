@@ -1,0 +1,4 @@
+# Secrets – neindexovat, neposílat do AI kontextu
+.env
+.env*
+.env*.local
