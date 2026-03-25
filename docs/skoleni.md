@@ -9,7 +9,7 @@ Primárním cílem školení je ukázat, jak lze s pomocí AI dosáhnout
  - **Požadované kvality** — výstup odpovídá našim standardům a je konzistentní, stále stejný
 
 Sekundárním cílem je ukázat
-- **Metodiku vývoje** — PRD, Plány, Quality Gates 
+- **Context-Driven Development** — společný kontext pro lidi i AI: PRD, rules, skills jako jediný zdroj pravdy; odtud plány (vývoj, testy), implementace a dokumentace
 - **Vývoj mobilní aplikace** — S využitím Expo Go
 - **Napojení na OpenAI API** — pro rozpoznání obrazu
 
@@ -20,12 +20,17 @@ Sekundárním cílem je ukázat
   - **development-process** - metodika vývoje (nejdříve PRD)
 
 - **Skills:**
-  - **product-requirements** — tvorba a úprava PRD (DDD = Document Driven Development)
-  - **project-plan** — plán vývojových etap odvozených z PRD (DDD) a zastavování vývoje v bodech kontroly (Quality Gates)
-  - **testing** — struktura E2E testů a jejich plán odvozený z PRD (DDD)
+  - **product-requirements** — tvorba a úprava PRD v metodice Context-Driven Development
+  - **project-plan** — plán vývojových etap odvozený z PRD a zastavování vývoje v bodech kontroly (Quality Gates)
+  - **testing** — struktura E2E testů a jejich plán odvozený z PRD
   - **security-review** — bezpečnostní audit
   - **ui-designer-jablotron** — UI a UX pravidla
 
+### Přehled metodiky (ilustrace)
+
+Níže: vstupy (lidé, AI), **jediný zdroj pravdy** (PRD + rules + skills), společný kontext a výstupy — plán vývoje, plán testů, dokumentace.
+
+![Context-Driven Development — přehled metodiky (školicí materiál)](./Context-Driven%20Development.png)
 
 ### Příprava na školení
 
@@ -76,7 +81,7 @@ Vytvoř aplikaci na skenování dokumentů
   - Jeden zdroj pravdy.
   - S využitím AI lehce aktualizovatelný.
   - Standardní formát umožní napojení na další navazující aktivity (vývoj, testing, dokumentace API)
-  - **Document Driven Development**
+  - **Context-Driven Development** — cílem nejsou dokumenty samy o sobě, ale sdílený kontext (PRD + rules + skills), ze kterého plyne plán, kód i testy.
 
 
 

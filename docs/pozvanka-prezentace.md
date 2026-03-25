@@ -14,7 +14,9 @@ zvu tě na **prezentaci** (spíš než klasické školení), **trvá cca 90 minu
 
 **O čem to hlavně bude**
 - **Skills a rules** — co to je, k čemu slouží a jak je používat (na konkrétních příkladech z mého projektu).
-- **Metodika** — od specifikace (PRD) přes plán etap až po implementaci a bezpečnostní review; jak na to s AI krok za krokem.
+- **Context-Driven Development** — jediný zdroj pravdy (PRD, rules, skills) jako společný kontext pro lidi i AI; odtud plán vývoje, plán testů a dokumentace; od specifikace přes etapy až po implementaci a bezpečnostní review s AI krok za krokem.
+
+![Context-Driven Development — přehled metodiky](./Context-Driven%20Development.png)
 
 **Co si odneseš navíc**
 - **Jak rychle udělat mobilní app** — během pár minut si vyzkoušíš vývoj a spuštění na telefonu pomocí Expo Go.
