@@ -62,6 +62,10 @@ Při psaní i revizi PRD platí tyto pravidla. Slouží k jednotné a kvalitní 
 - Závislosti a omezení jen v sekci 5; v requirements na ně odkazovat.
 - Každý termín definovaný v sekci 6 (Glosář) se v textu PRD (sekce 1–5) píše vizuálně odlišeně – v Markdownu *kurzívou*.
 
+## Umístění souboru
+
+PRD pojmenuj `PRD-<slug>.md` a ulož do `docs/` (pokud projekt nemá nastavená jiná pravidla). Při změně požadavků uprav **tento stejný soubor**; potom mají být v souladu aktualizovány `PLAN-<slug>.md` a `TST-<slug>.md` se stejným slugem (skilly project-plan a testing) — bez nových názvů souborů kvůli revizi.
+
 ## Další materiál
 
 - Plná šablona a příklad PRD: [reference.md](reference.md)

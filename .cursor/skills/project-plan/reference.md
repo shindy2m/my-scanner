@@ -6,7 +6,7 @@
 
 ## Šablona plánu
 
-Plán ukládej do projektu (doporučeně `docs/PLAN-<název>.md`). Používej checkboxy pro stav: `[ ]` = není hotovo, `[x]` = hotovo.
+Plán ukládej typicky jako `docs/PLAN-<slug>.md` se stejným slugem jako `PRD-<slug>.md`; pokud projekt používá jinou konvenci pro dokumenty, přizpůsob se jí. Při změnách požadavků aktualizuj nejdřív PRD, potom tento plán v existujícím souboru. Používej checkboxy pro stav: `[ ]` = není hotovo, `[x]` = hotovo.
 
 ```markdown
 # Plán: [Název projektu / feature]

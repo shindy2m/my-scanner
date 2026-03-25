@@ -1,0 +1,55 @@
+---
+description: Konvence souborů docs (PRD, PLAN, TST), pořadí před implementací, aktualizace dokumentů a nabídka security review po dokončení.
+alwaysApply: true
+---
+
+# Nastavení vývojového procesu
+
+## Konvence souborů (`docs/`)
+
+Všechny tyto dokumenty patří do adresáře **`docs/`** v kořeni projektu.
+
+| Dokument | Vzor názvu | Poznámka |
+|----------|------------|----------|
+| **PRD** (požadavky) | `PRD-<slug>.md` | Zdroj pro implementační plán i testovací plán (TST). |
+| **PLAN** (implementační plán) | `PLAN-<slug>.md` | Plán vývoje postavený na základě PRD |
+| **TST** (plán E2E / mapování na PRD) | `TST-<slug>.md` | Plán testů postavený na základě PRD |
+
+---
+
+## Před implementací: PRD a plán
+
+Před implementací aplikace nebo větší feature vždy zkontroluj: existuje PRD a plán podle tabulky výše?
+
+### Chybí PRD
+
+- Nepiš kód ani negeneruj PRD hned.
+- Zeptej se: „Chybí PRD. Chceš ho teď vytvořit?“
+- Po potvrzení: vytvoř PRD (skill product-requirements).
+- Po vytvoření: nabídni review. **S plánem začni až po potvrzení** (např. „Jsi s PRD spokojený? Můžu přejít k vytvoření plánu?“).
+
+### Chybí plán (PRD existuje)
+
+- Nepiš kód. Zeptej se: „Chceš teď vytvořit plán?“ (nebo po review PRD: „Můžu přejít k plánu?“).
+- Po potvrzení: vytvoř plán (skill project-plan).
+- Po vytvoření: nabídni review. **S implementací začni až po potvrzení** (např. „Jsi s plánem spokojený? Můžu přejít k implementaci?“).
+
+### Kdy psát kód
+
+Až když existují oba dokumenty a uživatel **výslovně potvrdí**, že můžeš začít s implementací.
+
+---
+
+## Po implementaci: Review a Testy
+
+Po dokončení implementace **nabídni security review a doplnění testů** (např. „Implementace je hotová. Chceš udělat security review?“). Pro provedení použij skilly security-review a testing.
+
+---
+
+## Aktualizace po změně požadavků
+
+Pro daný produkt nebo feature platí **jeden** soubor PRD a **jeden** soubor TST — neexistují paralelní varianty v `docs/`. Oba se při změně scope **upravují na místě** (stejný název souboru, stejný slug).
+
+**Plán** (`PLAN-<slug>.md`) se také **aktualizuje** v tom samém souboru: hotové etapy a jejich obsah měň jen pokud to vyžaduje nová realita (refaktor, oprava nesouladu s PRD). **Nové práce** po rozšíření požadavků přidávej jako **další etapy na konec** plánu (za už dokončené nebo rozpracované), aby zůstala čitelná historie postupu a nepřepisoval se smysl už uzavřených etap bez důvodu.
+
+Pořadí při změně: nejdřív **PRD**, potom **PLAN** (doplnění etap na konec + úpravy podle potřeby), nakonec **TST**, vše se stejným `<slug>` jako u PRD.

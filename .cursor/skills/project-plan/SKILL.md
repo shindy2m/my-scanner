@@ -5,7 +5,7 @@ description: Vytváří strukturovaný plán projektu (etapy) z PRD. Agent dopor
 
 # Plán projektu z PRD
 
-Skill vytváří plán implementace ve formě strukturovaného Markdownu. **Kroky 1 a 2 probíhají pouze v chatu** (doporučení strategie, seznam etap a jeho iterace) – žádný soubor se zatím nevytváří. Soubor plánu (`docs/PLAN-<název>.md`) se vytvoří až v **Kroku 3** po explicitním souhlasu uživatele s detailem etap. **Krok 4** (kontrola pokrytí PRD) proběhne teprve po uložení plánu – během tvorby se s kontrolou neotravuj.
+Skill vytváří plán implementace ve formě strukturovaného Markdownu. **Kroky 1 a 2 probíhají pouze v chatu** (doporučení strategie, seznam etap a jeho iterace) – žádný soubor se zatím nevytváří. Soubor plánu (`docs/PLAN-<slug>.md`) se vytvoří až v **Kroku 3** po explicitním souhlasu uživatele s detailem etap. **Krok 4** (kontrola pokrytí PRD) proběhne teprve po uložení plánu – během tvorby se s kontrolou neotravuj.
 
 ## Kdy skill použít
 
@@ -18,8 +18,8 @@ Skill vytváří plán implementace ve formě strukturovaného Markdownu. **Krok
 1. **Plán se generuje na základě PRD.** – plán odkazuje na konkrétní requirements (R1, R2…) a user stories (US-1…) z PRD.
 2. **Nejprve se vytvoří hrubý plán** (seznam etap s cíli); po schválení uživatelem se teprve detailně rozpracuje (cíle etap, requirements, testy).
 3. **Plán je tvořen tak,** aby každá etapa byla samostatně implementovatelná, reviewovatelná a testovatelná.
-4. **Soubor plánu** se vytváří až po odsouhlasení seznamu etap (Krok 3) – strukturovaný Markdown v repo, typicky `docs/PLAN-<název>.md`, verzovaný v gitu.
-5. **Stav plánu je viditelný** – u každé etapy a u položek uvnitř je zřetelně označeno, zda je hotovo (např. checkboxy `[x]` / `[ ]`).
+4. **Stav plánu je viditelný** – u každé etapy a u položek uvnitř je zřetelně označeno, zda je hotovo (např. checkboxy `[x]` / `[ ]`).
+5. **Rozšíření scope** – po nových požadavcích uprav stejný soubor `PLAN-<slug>.md`; **nové etapy přidávej na konec** dokumentu (za už dokončené nebo rozpracované), hotové etapy měň jen pokud to vyžaduje nová realita nebo soulad s PRD.
 
 ## Referenční strategie
 
@@ -42,12 +42,12 @@ Uživatel může chtít hybrid (např. „nejdřív feasibility pro API, pak MVP
 - Načti PRD projektu. Je-li PRDů víc, zeptej se který použít. **Chybí-li PRD,** upozorni uživatele a doporuč mu, aby začal vytvořením PRD (např. pomocí skillu product-requirements); bez PRD nepokračuj.
 - **Doporuč vhodnou strategii** na základě obsahu PRD a tabulky strategií výše (stručně zdůvodni, proč tato strategie).
 - Na základě doporučené strategie a PRD vytvoř **seznam etap**. **Neuváděj etapy v tabulce:** každou etapu uveď jako nadpis (např. **E1: Název etapy**) a pod ním na další řádek cíl etapy (detail v jedné větě nebo krátkém odstavci).
-- Nabídni iteraci: „Chceš něco přidat, odebrat nebo změnit pořadí?
+- Nabídni iteraci: „Chceš něco přidat, odebrat nebo změnit pořadí?“
 
 ### Krok 2: Iterace seznamu etap
 
 - Umožni uživateli **libovolný počet iterací** seznamu etap (přidat, odebrat, změnit pořadí, přeformulovat cíle). Seznam vždy uváděj ve formátu nadpis etapy + cíl pod ním (ne tabulku).
-- Nabídni iteraci: „Chceš něco přidat, odebrat nebo změnit pořadí?
+- Nabídni iteraci: „Chceš něco přidat, odebrat nebo změnit pořadí?“
 
 ### Krok 3: Detail etap a uložení plánu do souboru
 
@@ -57,7 +57,7 @@ Uživatel může chtít hybrid (např. „nejdřív feasibility pro API, pak MVP
   - **Typy testů** (např. unit, integrační, E2E, manuální)
   - **Konkrétní testy** (co přesně bude otestováno)
 - U každé etapy a u položek uvnitř použij checkboxy `[ ]` pro „není hotovo“, `[x]` pro „hotovo“, aby byl stav implementace z plánu zřejmý.
-- Plán ulož do projektu. **Název souboru** vždy odvoď z názvu PRD: `PRD-<název>.md` → `PLAN-<název>.md` (např. `docs/PRD-Document-Scanner.md` → `docs/PLAN-Document-Scanner.md`). Jde-li o plán na implementaci změn v PRD (doplňky, revize), přidej suffix, např. `-zmeny` nebo `-v2` → `docs/PLAN-Document-Scanner-zmeny.md`.
+- Plán pojmenuj `PLAN-<slug>.md` a ulož do `docs/` (pokud projekt nemá nastavená jiná pravidla). Slug musí odpovídat PRD (`PRD-<slug>.md`). Při změně požadavků nejdřív aktualizuj PRD, pak **uprav existující** plán v tomto souboru (nevytvářej nový soubor s jiným názvem kvůli „revizi“); nové práce zapisuj jako **další etapy na konec** plánu.
 - Během Kroku 1–3 s kontrolou pokrytí PRD **neotravuj** – žádné průběžné upozorňování na vynechané požadavky.
 
 ### Krok 4: Kontrola pokrytí PRD (až po uložení plánu)
