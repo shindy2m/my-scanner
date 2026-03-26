@@ -92,15 +92,6 @@ U *faktury* je pole *DPH celkem* v tabulce označené jako volitelné ve smyslu:
 - R15: Z detailu položky v *historii* je dostupný náhled původního vstupu (obrázek / náhled souboru dle typu vstupu) a stejná struktura *standardních údajů* + *přepis* jako po skenu. U položky s obrázkovým vstupem po klepnutí na náhled uživatel vidí obrázek v **originálním rozlišení**.
 - R16: Uživatel může z *historie* smazat položku; položka zmizí jen z runtime úložiště v rámci relace (v souladu s R17).
 
-### US-6: Úložiště jen za běhu aplikace
-
-**User story**: Jako uživatel chci, aby data zůstala jen v aplikaci po dobu jejího běhu, abych nemusel řešit dlouhodobé ukládání citlivých dokladů v této verzi produktu.
-
-**Requirements**:
-
-- R17: Žádné požadované ukládání skenů, *přepisů* ani *standardních údajů* do trvalého úložiště zařízení (AsyncStorage, SQLite, soubory) pro tuto verzi – stav žije v paměti procesu.
-- R18: Po ukončení aplikace procesem OS není zaručena obnova *historie*; chování při multitaskingu řídí OS (uživatel může přijít o data po kill aplikace).
-
 ## 4. Nefunkční požadavky
 
 - **Výkon**: Rozpoznání jednoho dokumentu by mělo v typických podmínkách doběhnout v řádu sekund až desítek sekund v závislosti na síti a velikosti vstupu; přesný SLA není stanoveno, ale UI musí zobrazovat probíhající stav (loading).
