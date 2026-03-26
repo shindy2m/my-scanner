@@ -15,29 +15,25 @@ import {
   type RecognitionRequest,
   type RecognitionResult,
 } from '../services/recognition';
+import { useSessionScans } from '../session/SessionScanContext';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Result'>;
 
 function recognitionParamKey(params: RootStackParamList['Result']): string {
-  if (params.mode === 'demo') {
-    return `demo:${params.scenario}`;
-  }
-  return `scan:${params.uri}:${params.source}`;
+  return `${params.uri}:${params.source}`;
 }
 
 function buildRecognitionRequest(
   params: RootStackParamList['Result']
 ): RecognitionRequest {
-  if (params.mode === 'demo') {
-    return { mockScenario: params.scenario };
-  }
   return { inputUri: params.uri, inputSource: params.source };
 }
 
 export function ResultScreen({ route }: Props) {
   const params = route.params;
-  const previewUri = params.mode === 'scan' ? params.uri : null;
+  const { addScan } = useSessionScans();
+  const previewUri = params.uri;
   const runKey = recognitionParamKey(params);
 
   const [loading, setLoading] = useState(true);
@@ -52,7 +48,14 @@ export function ResultScreen({ route }: Props) {
     mockRecognitionService
       .recognize(request)
       .then((r) => {
-        if (!cancelled) setResult(r);
+        if (!cancelled) {
+          setResult(r);
+          addScan({
+            result: r,
+            previewUri: params.uri,
+            inputSource: params.source,
+          });
+        }
       })
       .catch(() => {
         if (!cancelled) setError('Nepodařilo se dokončit mock rozpoznání.');
@@ -63,7 +66,7 @@ export function ResultScreen({ route }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [runKey]);
+  }, [runKey, addScan]);
 
   if (loading) {
     return (
@@ -102,6 +105,7 @@ export function ResultScreen({ route }: Props) {
 
   const typeLabel = DOCUMENT_TYPE_LABELS[result.suggestedType];
   const fields = getStandardFieldDefinitions(result.suggestedType);
+  const fullTranscript = result.transcript.trim();
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
@@ -133,12 +137,14 @@ export function ResultScreen({ route }: Props) {
         </View>
       ))}
 
-      <Text style={styles.h2}>Přepis</Text>
-      <Text style={styles.subh}>Shrnutí</Text>
-      <Text style={styles.body}>{result.transcript.summary}</Text>
-      <View style={styles.divider} />
-      <Text style={styles.subh}>Další rozpoznaný text</Text>
-      <Text style={styles.body}>{result.transcript.body}</Text>
+      <Text style={[styles.h2, styles.h2AfterFields]}>Kompletní přepis</Text>
+      <Text
+        style={styles.body}
+        accessibilityRole="text"
+        accessibilityLabel="Kompletní přepis dokumentu"
+      >
+        {fullTranscript ? result.transcript : '—'}
+      </Text>
     </ScrollView>
   );
 }
@@ -197,19 +203,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 10,
   },
-  subh: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#334155',
-    marginBottom: 6,
-  },
+  h2AfterFields: { marginTop: 20 },
   row: { marginBottom: 10 },
   label: { fontSize: 12, color: '#64748b', marginBottom: 2 },
   value: { fontSize: 16, color: '#0f172a' },
   body: { fontSize: 15, lineHeight: 22, color: '#1e293b' },
-  divider: {
-    height: 1,
-    backgroundColor: '#e2e8f0',
-    marginVertical: 14,
-  },
 });

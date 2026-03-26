@@ -10,7 +10,7 @@
 |---|--------|----------------|------|
 | 1 | Expo, navigace, mock rozpoznání | Projekt SDK 54, obrazovky, mock vrstva se strukturou výsledku dle PRD | [x] |
 | 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [x] |
-| 3 | Výsledek – pole a přepis | Standardní údaje, shrnutí + přepis, entita položky R10 a zápis do paměti relace | [ ] |
+| 3 | Výsledek – pole a přepis | Standardní údaje, Kompletní přepis (jeden text), entita položky R10 a zápis do paměti relace | [x] |
 | 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [ ] |
 | 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [ ] |
 | 6 | MVP demo – NFR | Loading, dotyk, kontrast, CS UI; text soukromí pro verzi s mockem | [ ] |
@@ -21,12 +21,12 @@
 ## Etapa 1: Expo projekt, navigace a mock „rozpoznání“
 
 - **Stav:** [x]
-- **Cíl etapy:** Běžící aplikace na Expo SDK 54 s navigací mezi hlavními obrazovkami; abstrakce „služby rozpoznání“ s mock implementací, která vrací strukturovaný výsledek (navržený typ, standardní údaje dle typu, přepis se shrnutím a tělem) bez síťového volání, kompatibilní s pozdější výměnou za OpenAI.
+- **Cíl etapy:** Běžící aplikace na Expo SDK 54 s navigací mezi hlavními obrazovkami; abstrakce „služby rozpoznání“ s mock implementací, která vrací strukturovaný výsledek (navržený typ, standardní údaje dle typu, jeden textový přepis pro Kompletní přepis) bez síťového volání, kompatibilní s pozdější výměnou za OpenAI.
 - **Řešené requirements:** Příprava pro US-2, R8–R12 (datový model a kontrakt); sady polí dle tabulky typů v PRD (§ Specifikace typů).
 - **Typy testů:** unit (mock, mapování typ → pole), manuální smoke
 - **Konkrétní testy:**
   - [x] Mock vrátí pro každý z tří typů dokumentu strukturu se všemi klíči standardních údajů dle PRD (hodnoty mohou být ukázkové).
-  - [x] Mock vrátí odděleně shrnutí a zbytek přepisu tak, aby šly v UI zobrazit jako v R9.
+  - [x] Mock vrátí neprázdný textový přepis pro sekci Kompletní přepis (R9).
   - [ ] Aplikace se spustí na iOS i Android (nebo cílové platformy z výběru týmu) bez chyby po inicializaci.
 - **Poznámky / závislosti:** Expo šablona kompatibilní s PRD § 5; volitelně scénář „nejistý typ“ pro pozdější R6 v mock režimu.
 
@@ -51,14 +51,14 @@
 
 ## Etapa 3: Obrazovka výsledku – standardní údaje a přepis
 
-- **Stav:** [ ]
-- **Cíl etapy:** Po úspěšném dokončení mock rozpoznání zobrazit sekci standardních údajů podle aktuálního typu, přepis se shrnutím nahoře a odděleným zbytkem textu; v paměti relace uložit položku splňující R10 (čas, štítek, pole, přepis, reference na médium pro náhled).
+- **Stav:** [x]
+- **Cíl etapy:** Po úspěšném dokončení mock rozpoznání zobrazit sekci standardních údajů podle aktuálního typu a sekci Kompletní přepis; v paměti relace uložit položku splňující R10 (čas, štítek, pole, text přepisu, reference na médium pro náhled).
 - **Řešené requirements:** R8, R9, R10, US-3
 - **Typy testů:** unit (formátování, prázdná pole / „—“), manuální, E2E (volitelně)
 - **Konkrétní testy:**
-  - [ ] Pro fakturu, účtenku a vizitku se zobrazí přesně sada polí z tabulky PRD.
-  - [ ] Přepis obsahuje na začátku blok shrnutí a vizuálně nebo strukturou je oddělen od zbytku rozpoznaného textu.
-  - [ ] Po úspěšném skenu existuje v runtime stavu položka s časovým razítkem, typem, standardními údaji, přepisem včetně shrnutí a referencí na vstup pro náhled.
+  - [x] Pro fakturu, účtenku a vizitku se zobrazí přesně sada polí z tabulky PRD.
+  - [x] Kompletní přepis zobrazuje jeden souvislý text z výsledku rozpoznání (R9).
+  - [x] Po úspěšném skenu existuje v runtime stavu položka s časovým razítkem, typem, standardními údaji, textem přepisu a referencí na vstup pro náhled.
 - **Poznámky / závislosti:** Závisí na E2; data pro historii (E5) vycházejí z této struktury.
 
 ---
@@ -66,12 +66,12 @@
 ## Etapa 4: Změna typu (štítku) bez druhého volání
 
 - **Stav:** [ ]
-- **Cíl etapy:** Jednoznačný výběr mezi třemi typy dokumentu; po změně typu žádné druhé volání mock služby ani (po E7) OpenAI – přemapování standardních údajů a úprava shrnutí výhradně z výsledku prvního rozpoznání. V mock fázi lze simulovat i R6 (nejistý návrh typu → uživatel vybere).
+- **Cíl etapy:** Jednoznačný výběr mezi třemi typy dokumentu; po změně typu žádné druhé volání mock služby ani (po E7) OpenAI – přemapování standardních údajů a obsahu Kompletního přepisu výhradně z výsledku prvního rozpoznání. V mock fázi lze simulovat i R6 (nejistý návrh typu → uživatel vybere).
 - **Řešené requirements:** R11, R12, US-4; R6 (MVP: mock; plná integrace s modelem v E7)
 - **Typy testů:** unit (přemapování polí, žádný druhý call služby), manuální
 - **Konkrétní testy:**
   - [ ] Přepnutí typu aktualizuje zobrazenou sadu standardních údajů bez nového volání recognition služby (spy / log).
-  - [ ] Shrnutí a přepis zůstanou konzistentní s pravidly PRD po změně typu (doplnění z textu kde jde, jinak prázdné nebo „—“).
+  - [ ] Kompletní přepis a standardní údaje zůstanou konzistentní s pravidly PRD po změně typu (doplnění z textu kde jde, jinak prázdné nebo „—“).
   - [ ] (Volitelně ve mock režimu) Scénář nejistého typu: uživatel může ručně zvolit typ a pokračovat dle R6.
 - **Poznámky / závislosti:** Závisí na E3.
 
@@ -115,7 +115,7 @@
 - **Řešené requirements:** R5, R6, R7, US-2; § 4 NFR – bezpečnost a soukromí (klíč, disclosure); § 5 – OpenAI / model
 - **Typy testů:** integrační (s testovacím klíčem nebo mock serverem), manuální (chyby sítě), unit (parsování odpovědi)
 - **Konkrétní testy:**
-  - [ ] Úspěšné volání API: výsledek obsahuje typ, standardní údaje, přepis se shrnutím v očekávaném tvaru.
+  - [ ] Úspěšné volání API: výsledek obsahuje typ, standardní údaje a jeden textový přepis pro Kompletní přepis v očekávaném tvaru.
   - [ ] Při nejasném typu modelu UI umožní ruční výběr a pokračování bez druhého volání po uživatelské změně (R6 + R12).
   - [ ] Simulovaná nebo reálná chyba sítě/API: srozumitelná hláška, možnost zopakovat nebo zrušit (R7).
   - [ ] Ověření, že produkční build neobsahuje hardcodovaný OpenAI klíč; popsán způsob konfigurace pro vývoj a produkci.

@@ -7,12 +7,8 @@ import {
   pickImageFile,
 } from '../input/pickDocumentImage';
 import type { RootStackParamList } from '../navigation/types';
-import type { RecognitionMockScenario } from '../services/recognition';
-import { DOCUMENT_TYPE_LABELS, type DocumentType } from '../types/document';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-const DEMO_TYPES: DocumentType[] = ['invoice', 'receipt', 'business_card'];
 
 export function HomeScreen({ navigation }: Props) {
   const [busy, setBusy] = useState(false);
@@ -29,7 +25,6 @@ export function HomeScreen({ navigation }: Props) {
         const picked = await pick();
         if (picked) {
           navigation.navigate('Result', {
-            mode: 'scan',
             uri: picked.uri,
             source: picked.source,
           });
@@ -41,10 +36,6 @@ export function HomeScreen({ navigation }: Props) {
     },
     [navigation]
   );
-
-  const goResultDemo = (scenario: RecognitionMockScenario) => {
-    navigation.navigate('Result', { mode: 'demo', scenario });
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
@@ -101,27 +92,6 @@ export function HomeScreen({ navigation }: Props) {
       >
         <Text style={styles.secondaryNavLabel}>Historie</Text>
       </Pressable>
-
-      <Text style={styles.section}>Ukázka bez kamery (etapa 1)</Text>
-      <Text style={styles.sectionHint}>
-        Rychlý náhled mock dat podle typu — bez vstupního obrázku.
-      </Text>
-      {DEMO_TYPES.map((t) => (
-        <Pressable
-          key={t}
-          style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}
-          onPress={() => goResultDemo(t)}
-        >
-          <Text style={styles.secondaryLabel}>{DOCUMENT_TYPE_LABELS[t]}</Text>
-        </Pressable>
-      ))}
-
-      <Pressable
-        style={({ pressed }) => [styles.tertiary, pressed && styles.pressed]}
-        onPress={() => goResultDemo('uncertain')}
-      >
-        <Text style={styles.tertiaryLabel}>Nejistý návrh typu (mock R6)</Text>
-      </Pressable>
     </ScrollView>
   );
 }
@@ -137,18 +107,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 8,
     color: '#333',
-  },
-  section: {
-    marginTop: 16,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111',
-  },
-  sectionHint: {
-    fontSize: 13,
-    color: '#64748b',
-    marginTop: -4,
-    marginBottom: 4,
   },
   primary: {
     backgroundColor: '#2563eb',
@@ -178,21 +136,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryNavLabel: { fontSize: 16, fontWeight: '600', color: '#2563eb' },
-  secondary: {
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    backgroundColor: '#f8fafc',
-  },
-  secondaryLabel: { fontSize: 16, color: '#0f172a' },
-  tertiary: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    backgroundColor: '#fef3c7',
-  },
-  tertiaryLabel: { fontSize: 15, color: '#92400e' },
   pressed: { opacity: 0.85 },
 });

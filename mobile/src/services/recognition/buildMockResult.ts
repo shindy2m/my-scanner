@@ -25,14 +25,10 @@ function buildInvoiceMock(): RecognitionResult {
     suggestedType: 'invoice',
     typeConfidence: 'high',
     standardFields: fields,
-    transcript: {
-      summary:
-        'Faktura od dodavatele Ukázková s.r.o. na částku 12 400 Kč se splatností 15. 3. 2025.',
-      body:
-        'FAKTURA č. FV-2025-0042\nDatum vystavení: 1. 3. 2025\nDodavatel: Ukázková s.r.o., IČ 12345678\n' +
-        'Odběratel: Odběratel a.s.\nPoložky: služby konzultace 40 hodin\nCelkem: 12 400 Kč vč. DPH\n' +
-        'Způsob platby: převodem na účet.',
-    },
+    transcript:
+      'FAKTURA č. FV-2025-0042\nDatum vystavení: 1. 3. 2025\nDodavatel: Ukázková s.r.o., IČ 12345678\n' +
+      'Odběratel: Odběratel a.s.\nPoložky: služby konzultace 40 hodin\nCelkem: 12 400 Kč vč. DPH\n' +
+      'Způsob platby: převodem na účet.',
   };
 }
 
@@ -46,12 +42,9 @@ function buildReceiptMock(): RecognitionResult {
     suggestedType: 'receipt',
     typeConfidence: 'high',
     standardFields: fields,
-    transcript: {
-      summary: 'Účtenka z obchodu Supermarket Hlavní, celkem 487,30 Kč.',
-      body:
-        'SUPERMARKET HLAVNÍ\n26. 3. 2025 18:42\n--------------------------------\nMLÉKO 1L ........ 29,90\nCHLÉB ........... 42,00\n' +
-        '--------------------------------\nCELKEM 487,30 Kč\nDěkujeme za nákup.',
-    },
+    transcript:
+      'SUPERMARKET HLAVNÍ\n26. 3. 2025 18:42\n--------------------------------\nMLÉKO 1L ........ 29,90\nCHLÉB ........... 42,00\n' +
+      '--------------------------------\nCELKEM 487,30 Kč\nDěkujeme za nákup.',
   };
 }
 
@@ -67,11 +60,8 @@ function buildBusinessCardMock(): RecognitionResult {
     suggestedType: 'business_card',
     typeConfidence: 'high',
     standardFields: fields,
-    transcript: {
-      summary: 'Vizitka Jana Nováka z ACME, kontakt e-mail a telefon.',
-      body:
-        'Jan Novák\nVedoucí prodeje | ACME s.r.o.\n+420 777 888 999\njan.novak@acme.example\nacme.example\nPraha',
-    },
+    transcript:
+      'Jan Novák\nVedoucí prodeje | ACME s.r.o.\n+420 777 888 999\njan.novak@acme.example\nacme.example\nPraha',
   };
 }
 

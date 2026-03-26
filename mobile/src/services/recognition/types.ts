@@ -1,21 +1,16 @@
 import type { DocumentType } from '../../types/document';
 
-/** Oddělené shrnutí a tělo přepisu (R9). */
-export interface Transcript {
-  summary: string;
-  body: string;
-}
-
 /**
  * Výstup rozpoznání – kontrakt pro mock i pozdější OpenAI (E7).
  * standardFields obsahuje všechny klíče daného typu (prázdné řetězce povoleny).
+ * transcript = text pro sekci Kompletní přepis (jeden celek).
  */
 export interface RecognitionResult {
   suggestedType: DocumentType;
   /** Nízká jistota → scénář R6 (uživatel vybere typ). */
   typeConfidence: 'high' | 'low';
   standardFields: Record<string, string>;
-  transcript: Transcript;
+  transcript: string;
 }
 
 export type RecognitionMockScenario = DocumentType | 'uncertain';

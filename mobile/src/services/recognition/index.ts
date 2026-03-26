@@ -4,7 +4,6 @@ export type {
   RecognitionResult,
   RecognitionMockScenario,
   RecognitionService,
-  Transcript,
 } from './types';
 export {
   getStandardFieldDefinitions,

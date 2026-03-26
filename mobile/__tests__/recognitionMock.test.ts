@@ -17,11 +17,9 @@ describe('mock recognition (PRD struktura)', () => {
     }
   );
 
-  it('oddělí shrnutí a tělo přepisu (R9)', () => {
+  it('vrátí neprázdný kompletní přepis (jeden text)', () => {
     const result = buildMockResultForType('invoice');
-    expect(result.transcript.summary.length).toBeGreaterThan(0);
-    expect(result.transcript.body.length).toBeGreaterThan(0);
-    expect(result.transcript.summary).not.toBe(result.transcript.body);
+    expect(result.transcript.trim().length).toBeGreaterThan(0);
   });
 
   it('nejistý scénář má nízkou jistotu typu', () => {
@@ -44,6 +42,6 @@ describe('mock recognition (PRD struktura)', () => {
     });
     expect(['invoice', 'receipt', 'business_card']).toContain(r.suggestedType);
     expect(r.standardFields).toBeDefined();
-    expect(r.transcript.summary.length).toBeGreaterThan(0);
+    expect(r.transcript.trim().length).toBeGreaterThan(0);
   });
 });
