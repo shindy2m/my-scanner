@@ -10,10 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.2.1",
     "@react-navigation/native-stack": "^7.14.9",
     "expo": "~54.0.0",
     "expo-document-picker": "~14.0.8",
+    "expo-file-system": "~19.0.21",
     "expo-image-picker": "~17.0.10",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
@@ -26,6 +28,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/react": "~19.1.10",
+    "dotenv": "^17.3.1",
     "jest": "^29.7.0",
     "jest-expo": "^55.0.11",
     "typescript": "~5.9.2"

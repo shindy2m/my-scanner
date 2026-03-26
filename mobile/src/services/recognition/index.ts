@@ -21,4 +21,16 @@ export {
   createMockRecognitionService,
   mockRecognitionService,
 } from './mockRecognitionService';
+export { getConfiguredRecognitionService } from './getConfiguredRecognitionService';
+export {
+  getRecognitionBackend,
+  getRecognitionLoadingHint,
+  isMockExplicitlyForced,
+  recognitionSendsDataOffDevice,
+  type RecognitionBackend,
+} from './recognitionEnv';
+export {
+  normalizeRecognitionPayload,
+  parseRecognitionJsonString,
+} from './parseRecognitionPayload';
 export { remapStandardFieldsForType } from './remapStandardFieldsForType';

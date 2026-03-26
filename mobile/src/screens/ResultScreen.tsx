@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -11,16 +11,22 @@ import {
 } from 'react-native';
 import { ScanResultContent } from '../components/ScanResultContent';
 import type { RootStackParamList } from '../navigation/types';
-import { MIN_TOUCH_TARGET } from '../theme/accessibility';
 import {
-  mockRecognitionService,
+  getConfiguredRecognitionService,
+  getRecognitionBackend,
+  getRecognitionLoadingHint,
   remapStandardFieldsForType,
   type RecognitionRequest,
   type RecognitionResult,
 } from '../services/recognition';
+import {
+  grantNetworkRecognitionConsent,
+  hasNetworkRecognitionConsent,
+} from '../session/networkRecognitionConsent';
 import { useSessionScans } from '../session/SessionScanContext';
 import type { DocumentType } from '../types/document';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
+import { MIN_TOUCH_TARGET } from '../theme/accessibility';
 
 const DOCUMENT_TYPES: DocumentType[] = [
   'invoice',
@@ -40,12 +46,24 @@ function buildRecognitionRequest(
   return { inputUri: params.uri, inputSource: params.source };
 }
 
-export function ResultScreen({ route }: Props) {
+export function ResultScreen({ route, navigation }: Props) {
   const params = route.params;
   const { addScan, updateScan } = useSessionScans();
   const previewUri = params.uri;
   const runKey = recognitionParamKey(params);
 
+  const recognitionService = useMemo(
+    () => getConfiguredRecognitionService(),
+    []
+  );
+  const backend = useMemo(() => getRecognitionBackend(), []);
+  const loadingHint = getRecognitionLoadingHint(backend);
+
+  const [consentPhase, setConsentPhase] = useState<
+    'loading' | 'prompt' | 'done'
+  >(() => (backend === 'mock' ? 'done' : 'loading'));
+
+  const [retryKey, setRetryKey] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [rawResult, setRawResult] = useState<RecognitionResult | null>(null);
@@ -53,14 +71,37 @@ export function ResultScreen({ route }: Props) {
   const [currentScanId, setCurrentScanId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (backend === 'mock') return;
+    let cancelled = false;
+    hasNetworkRecognitionConsent()
+      .then((yes) => {
+        if (!cancelled) {
+          setConsentPhase(yes ? 'done' : 'prompt');
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setConsentPhase('prompt');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [backend]);
+
+  useEffect(() => {
+    if (consentPhase !== 'done') {
+      setLoading(consentPhase === 'loading');
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
     setRawResult(null);
     setSelectedType(null);
     setCurrentScanId(null);
-    const request = buildRecognitionRequest(route.params);
-    mockRecognitionService
+
+    const request = buildRecognitionRequest(params);
+    recognitionService
       .recognize(request)
       .then((r) => {
         if (!cancelled) {
@@ -74,16 +115,35 @@ export function ResultScreen({ route }: Props) {
           setCurrentScanId(id);
         }
       })
-      .catch(() => {
-        if (!cancelled) setError('Nepodařilo se dokončit mock rozpoznání.');
+      .catch((e: unknown) => {
+        if (!cancelled) {
+          if (e instanceof TypeError) {
+            setError(
+              'Nelze se spojit se sítí. Zkontrolujte připojení a zkuste to znovu.'
+            );
+          } else if (e instanceof Error) {
+            setError(e.message);
+          } else {
+            setError('Nepodařilo se dokončit rozpoznání.');
+          }
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
-  }, [runKey, addScan, params.uri, params.source]);
+  }, [
+    runKey,
+    retryKey,
+    consentPhase,
+    addScan,
+    params.uri,
+    params.source,
+    recognitionService,
+  ]);
 
   useEffect(() => {
     if (!rawResult || !currentScanId || selectedType === null) return;
@@ -93,6 +153,74 @@ export function ResultScreen({ route }: Props) {
       standardFields: fields,
     });
   }, [rawResult, currentScanId, selectedType, updateScan]);
+
+  const onRetry = () => {
+    setRetryKey((k) => k + 1);
+  };
+
+  const onAcceptNetwork = async () => {
+    await grantNetworkRecognitionConsent();
+    setConsentPhase('done');
+  };
+
+  if (consentPhase === 'loading') {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#1d4ed8" />
+        <Text style={styles.muted}>Načítání…</Text>
+      </View>
+    );
+  }
+
+  if (consentPhase === 'prompt') {
+    return (
+      <ScrollView contentContainerStyle={styles.scrollLoading}>
+        {previewUri ? (
+          <Image
+            accessibilityLabel="Náhled vybraného dokumentu"
+            source={{ uri: previewUri }}
+            style={styles.preview}
+            resizeMode="contain"
+          />
+        ) : null}
+        <View style={styles.consentCard}>
+          <Text style={styles.consentTitle}>Odeslání dokumentu ke zpracování</Text>
+          <Text style={styles.consentBody}>
+            Pro rozpoznání textu bude tento obrázek odeslán mimo vaše zařízení ke
+            zpracování (služba OpenAI nebo váš server přes proxy). Obsah zpracování
+            podléhá podmínkám poskytovatele služby.
+          </Text>
+          <Text style={styles.consentBody}>
+            Pokud pokračujete, berete toto odeslání na vědomí. Historie skenů zůstává
+            jen v paměti této relace aplikace.
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Souhlasím s odesláním dokumentu ke zpracování"
+            onPress={() => {
+              void onAcceptNetwork();
+            }}
+            style={({ pressed }) => [
+              styles.primaryBtn,
+              pressed && styles.primaryBtnPressed,
+            ]}
+          >
+            <Text style={styles.primaryBtnText}>Souhlasím a pokračovat</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => navigation.goBack()}
+            style={({ pressed }) => [
+              styles.secondaryBtn,
+              pressed && styles.secondaryBtnPressed,
+            ]}
+          >
+            <Text style={styles.secondaryBtnText}>Zpět</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    );
+  }
 
   if (loading) {
     return (
@@ -114,9 +242,7 @@ export function ResultScreen({ route }: Props) {
         >
           <ActivityIndicator size="large" color="#1d4ed8" />
           <Text style={styles.loadingTitle}>Zpracovává se dokument</Text>
-          <Text style={styles.loadingHint}>
-            Simulované rozpoznání běží na zařízení (ukázkový režim).
-          </Text>
+          <Text style={styles.loadingHint}>{loadingHint}</Text>
           <Text
             style={styles.muted}
             accessibilityLiveRegion="polite"
@@ -142,6 +268,28 @@ export function ResultScreen({ route }: Props) {
         <Text style={styles.error} accessibilityRole="alert">
           {error ?? 'Neznámá chyba'}
         </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Zkusit rozpoznání znovu"
+          onPress={onRetry}
+          style={({ pressed }) => [
+            styles.primaryBtn,
+            pressed && styles.primaryBtnPressed,
+            { marginTop: 8 },
+          ]}
+        >
+          <Text style={styles.primaryBtnText}>Zkusit znovu</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => navigation.goBack()}
+          style={({ pressed }) => [
+            styles.secondaryBtn,
+            pressed && styles.secondaryBtnPressed,
+          ]}
+        >
+          <Text style={styles.secondaryBtnText}>Zpět</Text>
+        </Pressable>
       </View>
     );
   }
@@ -230,6 +378,53 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e2e8f0',
   },
+  consentCard: {
+    padding: 18,
+    gap: 14,
+    backgroundColor: '#f8fafc',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  consentTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0f172a',
+  },
+  consentBody: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#334155',
+  },
+  primaryBtn: {
+    minHeight: MIN_TOUCH_TARGET,
+    borderRadius: 10,
+    backgroundColor: '#1d4ed8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  primaryBtnPressed: { opacity: 0.88 },
+  primaryBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  secondaryBtn: {
+    minHeight: MIN_TOUCH_TARGET,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#94a3b8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  secondaryBtnPressed: { opacity: 0.88 },
+  secondaryBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
   loadingTitle: {
     fontSize: 18,
     fontWeight: '700',
@@ -251,7 +446,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   muted: { color: '#475569', marginTop: 4, fontSize: 15, fontWeight: '600' },
-  error: { color: '#b91c1c', textAlign: 'center' },
+  error: { color: '#b91c1c', textAlign: 'center', marginBottom: 4 },
   typeLine: { fontSize: 16, marginBottom: 12 },
   bold: { fontWeight: '700' },
   warn: { color: '#b45309' },

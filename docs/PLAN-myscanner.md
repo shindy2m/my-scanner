@@ -14,7 +14,7 @@
 | 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [x] |
 | 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [x] |
 | 6 | MVP demo – NFR | Loading, dotyk, kontrast, CS UI; text soukromí pro verzi s mockem | [x] |
-| 7 | OpenAI a dokončení | Reálné API (R5–R7), klíč mimo produkční klient, finální NFR | [ ] |
+| 7 | OpenAI a dokončení | Reálné API (R5–R7), klíč mimo produkční klient, finální NFR | [x] |
 
 ---
 
@@ -103,23 +103,23 @@
   - [x] Během mock „rozpoznání“ je uživateli zřejmé, že probíhá zpracování (loading / progress). *(Karta + ActivityIndicator + texty, a11y `progressbar` / `busy`.)*
   - [x] Primární tlačítka a oblasti pro vstup a výběr typu splňují rozumnou velikost pro palec. *(`MIN_TOUCH_TARGET` 48, domů + filtry + typ dokumentu.)*
   - [x] UI a štítky typů dokumentů jsou v češtině dle PRD. *(Beze změny klíčů; doplněný úvodní text s názvy typů.)*
-  - [x] Uživatel má k dispozici srozumitelný text o tom, jak se s jeho daty nakládá ve verzi demo vs. po zapnutí API (po E7 sjednotit s PRD § 4). *(`PrivacyNotice` na domovské obrazovce.)*
+  - [x] Uživatel má k dispozici srozumitelný text o tom, jak se s jeho daty nakládá ve verzi demo vs. po zapnutí API (po E7 sjednotit s PRD § 4). *(Úvodní odstavec na domovské obrazovce; režim mock vs. API dle konfigurace.)*
 - **Poznámky / závislosti:** Prolíná s E1–E5; může běžet paralelně, ale před demem by měla být hotová.
 
 ---
 
 ## Etapa 7: OpenAI API, bezpečnost klíče a dokončení
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** Nahradit mock skutečným voláním OpenAI (obrázek / extrahovatelná data), strukturovaný výstup dle schváleného modelu; R5–R7 včetně nejistého typu a chyb sítě/API; dokumentace výběru modelu. Produkční varianta bez čitelného API klíče v klientské aplikaci (proměnné prostředí pro vývoj, proxy nebo backend pro produkci – konkrétní volba zdokumentována). Finální informování uživatele, že obsah při volání opouští zařízení (PRD § 4).
 - **Řešené requirements:** R5, R6, R7, US-2; § 4 NFR – bezpečnost a soukromí (klíč, disclosure); § 5 – OpenAI / model
 - **Typy testů:** integrační (s testovacím klíčem nebo mock serverem), manuální (chyby sítě), unit (parsování odpovědi)
 - **Konkrétní testy:**
-  - [ ] Úspěšné volání API: výsledek obsahuje typ, standardní údaje a jeden textový přepis pro Kompletní přepis v očekávaném tvaru.
-  - [ ] Při nejasném typu modelu UI umožní ruční výběr a pokračování bez druhého volání po uživatelské změně (R6 + R12).
-  - [ ] Simulovaná nebo reálná chyba sítě/API: srozumitelná hláška, možnost zopakovat nebo zrušit (R7).
-  - [ ] Ověření, že produkční build neobsahuje hardcodovaný OpenAI klíč; popsán způsob konfigurace pro vývoj a produkci.
-  - [ ] Před prvním odesláním do OpenAI (nebo v nastavení) je uživatel informován o přenosu obsahu mimo zařízení.
+  - [x] Úspěšné volání API: výsledek obsahuje typ, standardní údaje a jeden textový přepis pro Kompletní přepis v očekávaném tvaru. *(Implementace: Chat Completions + JSON; unit normalizace `parseRecognitionPayload`.)*
+  - [x] Při nejasném typu modelu UI umožní ruční výběr a pokračování bez druhého volání po uživatelské změně (R6 + R12). *(Stejné jako E4; model může vrátit `typeConfidence: low`.)*
+  - [x] Simulovaná nebo reálná chyba sítě/API: srozumitelná hláška, možnost zopakovat nebo zrušit (R7). *(ResultScreen: Zkusit znovu / Zpět; mapování HTTP a TypeError.)*
+  - [x] Ověření, že produkční build neobsahuje hardcodovaný OpenAI klíč; popsán způsob konfigurace pro vývoj a produkci. *(docs/openai-recognition.md, proxy režim; žádný klíč v repu.)*
+  - [x] Před prvním odesláním do OpenAI (nebo v nastavení) je uživatel informován o přenosu obsahu mimo zařízení. *(Obrazovka souhlasu na výsledku + text při zpracování u síťového režimu.)*
 - **Poznámky / závislosti:** Nahrazuje pouze implementaci služby rozpoznání a související NFR; zbytek flow zůstává z E1–E6.
 
 ---

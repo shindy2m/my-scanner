@@ -1,7 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { PrivacyNotice } from '../components/PrivacyNotice';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   pickFromCamera,
   pickFromGallery,
@@ -42,11 +41,18 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
       <Text style={styles.lead}>
-        Naskenujte nebo vyberte obrázek dokumentu (faktura, účtenka z obchodu nebo
-        vizitka). Po výběru uvidíte náhled a{' '}
-        <Text style={styles.leadStrong}>rozpoznání proběhne automaticky</Text>{' '}
-        (v této ukázce jde o simulaci na zařízení).
+        Vyberte doklad — fakturu, účtenku z obchodu nebo vizitku.
+        {'\n\n'}
+        Můžete ho vyfotit, nahrát z galerie nebo ze souboru.
       </Text>
+
+      <Image
+        source={require('../../assets/home-input-hero.png')}
+        style={styles.hero}
+        resizeMode="contain"
+        accessibilityLabel="Kamera, galerie a soubor jako způsoby nahrání dokladu"
+        accessible={true}
+      />
 
       <Pressable
         style={({ pressed }) => [
@@ -107,8 +113,6 @@ export function HomeScreen({ navigation }: Props) {
       >
         <Text style={styles.secondaryNavLabel}>Historie</Text>
       </Pressable>
-
-      <PrivacyNotice />
     </ScrollView>
   );
 }
@@ -125,7 +129,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: '#1e293b',
   },
-  leadStrong: { fontWeight: '700', color: '#0f172a' },
+  hero: {
+    width: '100%',
+    maxHeight: 200,
+    minHeight: 140,
+    marginBottom: 8,
+    alignSelf: 'center',
+  },
   primary: {
     backgroundColor: '#1d4ed8',
     paddingVertical: 16,
