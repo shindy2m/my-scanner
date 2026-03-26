@@ -8,7 +8,7 @@
 
 | # | Etapa | Cíl (stručně) | Stav |
 |---|--------|----------------|------|
-| 1 | Expo, navigace, mock rozpoznání | Projekt SDK 54, obrazovky, mock vrstva se strukturou výsledku dle PRD | [ ] |
+| 1 | Expo, navigace, mock rozpoznání | Projekt SDK 54, obrazovky, mock vrstva se strukturou výsledku dle PRD | [x] |
 | 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [ ] |
 | 3 | Výsledek – pole a přepis | Standardní údaje, shrnutí + přepis, entita položky R10 a zápis do paměti relace | [ ] |
 | 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [ ] |
@@ -20,13 +20,13 @@
 
 ## Etapa 1: Expo projekt, navigace a mock „rozpoznání“
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** Běžící aplikace na Expo SDK 54 s navigací mezi hlavními obrazovkami; abstrakce „služby rozpoznání“ s mock implementací, která vrací strukturovaný výsledek (navržený typ, standardní údaje dle typu, přepis se shrnutím a tělem) bez síťového volání, kompatibilní s pozdější výměnou za OpenAI.
 - **Řešené requirements:** Příprava pro US-2, R8–R12 (datový model a kontrakt); sady polí dle tabulky typů v PRD (§ Specifikace typů).
 - **Typy testů:** unit (mock, mapování typ → pole), manuální smoke
 - **Konkrétní testy:**
-  - [ ] Mock vrátí pro každý z tří typů dokumentu strukturu se všemi klíči standardních údajů dle PRD (hodnoty mohou být ukázkové).
-  - [ ] Mock vrátí odděleně shrnutí a zbytek přepisu tak, aby šly v UI zobrazit jako v R9.
+  - [x] Mock vrátí pro každý z tří typů dokumentu strukturu se všemi klíči standardních údajů dle PRD (hodnoty mohou být ukázkové).
+  - [x] Mock vrátí odděleně shrnutí a zbytek přepisu tak, aby šly v UI zobrazit jako v R9.
   - [ ] Aplikace se spustí na iOS i Android (nebo cílové platformy z výběru týmu) bez chyby po inicializaci.
 - **Poznámky / závislosti:** Expo šablona kompatibilní s PRD § 5; volitelně scénář „nejistý typ“ pro pozdější R6 v mock režimu.
 
