@@ -1,5 +1,8 @@
+import {
+  pickDocumentTypeFromUri,
+  resolveMockScenario,
+} from './buildMockResult';
 import type { RecognitionRequest, RecognitionService } from './types';
-import { resolveMockScenario } from './buildMockResult';
 
 const MOCK_DELAY_MS = 400;
 
@@ -9,7 +12,12 @@ export function createMockRecognitionService(
   return {
     async recognize(request: RecognitionRequest) {
       await new Promise((r) => setTimeout(r, delayMs));
-      return resolveMockScenario(request.mockScenario);
+      const scenario =
+        request.mockScenario ??
+        (request.inputUri != null && request.inputUri.length > 0
+          ? pickDocumentTypeFromUri(request.inputUri)
+          : undefined);
+      return resolveMockScenario(scenario);
     },
   };
 }

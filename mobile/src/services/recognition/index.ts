@@ -1,4 +1,5 @@
 export type {
+  DocumentInputSource,
   RecognitionRequest,
   RecognitionResult,
   RecognitionMockScenario,
@@ -12,7 +13,11 @@ export {
   RECEIPT_STANDARD_FIELDS,
   BUSINESS_CARD_STANDARD_FIELDS,
 } from './standardFields';
-export { buildMockResultForType, resolveMockScenario } from './buildMockResult';
+export {
+  buildMockResultForType,
+  pickDocumentTypeFromUri,
+  resolveMockScenario,
+} from './buildMockResult';
 export {
   createMockRecognitionService,
   mockRecognitionService,

@@ -9,7 +9,7 @@
 | # | Etapa | Cíl (stručně) | Stav |
 |---|--------|----------------|------|
 | 1 | Expo, navigace, mock rozpoznání | Projekt SDK 54, obrazovky, mock vrstva se strukturou výsledku dle PRD | [x] |
-| 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [ ] |
+| 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [x] |
 | 3 | Výsledek – pole a přepis | Standardní údaje, shrnutí + přepis, entita položky R10 a zápis do paměti relace | [ ] |
 | 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [ ] |
 | 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [ ] |
@@ -34,7 +34,7 @@
 
 ## Etapa 2: Vstup dokumentu a automatický start „rozpoznání“
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** Uživatel může vstoupit do skenu přes kameru, galerii a soubor; po výběru se zobrazí náhled vstupu a bez dalšího potvrzení uživatele se spustí mock pipeline (stejné rozhraní jako později u API).
 - **Řešené requirements:** R1, R2, R3, R4, US-1
 - **Typy testů:** integrační / manuální na zařízení, E2E (volitelně)
@@ -45,6 +45,7 @@
   - [ ] Po výběru jakéhokoli vstupu: náhled je vidět a rozpoznání (mock) se spustí automaticky bez mezikroku potvrzení.
   - [ ] Oprávnění OS (kamera, galerie, soubory) ošetřena srozumitelně pro uživatele.
 - **Poznámky / závislosti:** Závisí na E1 (navigace + mock služba).
+- **Podporované obrázky (implementace):** JPEG, PNG, WebP, HEIC (dle OS a Expo); výběr souboru přes systémový picker s filtrem `image/*`. Web: kamera v prohlížeči není nabízena; galerie a soubor dle prohlížeče.
 
 ---
 

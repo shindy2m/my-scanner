@@ -20,9 +20,18 @@ export interface RecognitionResult {
 
 export type RecognitionMockScenario = DocumentType | 'uncertain';
 
+/** Zdroj vstupu pro R1–R3 a později pro API (E7). */
+export type DocumentInputSource = 'camera' | 'gallery' | 'file';
+
 export interface RecognitionRequest {
   /** E1/E2: výběr mock výstupu; u reálného API se ignoruje. */
   mockScenario?: RecognitionMockScenario;
+  /**
+   * Lokální URI obrázku po výběru uživatelem.
+   * Mock odvozuje ukázkový typ z URI (deterministicky); E7 obrázek odešle do API.
+   */
+  inputUri?: string;
+  inputSource?: DocumentInputSource;
 }
 
 export interface RecognitionService {

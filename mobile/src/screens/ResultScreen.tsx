@@ -2,6 +2,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,14 +12,34 @@ import type { RootStackParamList } from '../navigation/types';
 import {
   getStandardFieldDefinitions,
   mockRecognitionService,
+  type RecognitionRequest,
   type RecognitionResult,
 } from '../services/recognition';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Result'>;
 
+function recognitionParamKey(params: RootStackParamList['Result']): string {
+  if (params.mode === 'demo') {
+    return `demo:${params.scenario}`;
+  }
+  return `scan:${params.uri}:${params.source}`;
+}
+
+function buildRecognitionRequest(
+  params: RootStackParamList['Result']
+): RecognitionRequest {
+  if (params.mode === 'demo') {
+    return { mockScenario: params.scenario };
+  }
+  return { inputUri: params.uri, inputSource: params.source };
+}
+
 export function ResultScreen({ route }: Props) {
-  const { scenario } = route.params;
+  const params = route.params;
+  const previewUri = params.mode === 'scan' ? params.uri : null;
+  const runKey = recognitionParamKey(params);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RecognitionResult | null>(null);
@@ -27,8 +48,9 @@ export function ResultScreen({ route }: Props) {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    const request = buildRecognitionRequest(route.params);
     mockRecognitionService
-      .recognize({ mockScenario: scenario })
+      .recognize(request)
       .then((r) => {
         if (!cancelled) setResult(r);
       })
@@ -41,20 +63,38 @@ export function ResultScreen({ route }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [scenario]);
+  }, [runKey]);
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.muted}>Probíhá mock rozpoznání…</Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollLoading}>
+        {previewUri ? (
+          <Image
+            accessibilityLabel="Náhled vybraného dokumentu"
+            source={{ uri: previewUri }}
+            style={styles.preview}
+            resizeMode="contain"
+          />
+        ) : null}
+        <View style={styles.loadingBlock}>
+          <ActivityIndicator size="large" />
+          <Text style={styles.muted}>Probíhá mock rozpoznání…</Text>
+        </View>
+      </ScrollView>
     );
   }
 
   if (error || !result) {
     return (
       <View style={styles.centered}>
+        {previewUri ? (
+          <Image
+            accessibilityLabel="Náhled vybraného dokumentu"
+            source={{ uri: previewUri }}
+            style={styles.previewError}
+            resizeMode="contain"
+          />
+        ) : null}
         <Text style={styles.error}>{error ?? 'Neznámá chyba'}</Text>
       </View>
     );
@@ -65,6 +105,15 @@ export function ResultScreen({ route }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
+      {previewUri ? (
+        <Image
+          accessibilityLabel="Náhled vybraného dokumentu"
+          source={{ uri: previewUri }}
+          style={styles.previewThumb}
+          resizeMode="contain"
+        />
+      ) : null}
+
       <Text style={styles.typeLine}>
         Navržený typ: <Text style={styles.bold}>{typeLabel}</Text>
         {result.typeConfidence === 'low' ? (
@@ -96,6 +145,40 @@ export function ResultScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   scroll: { padding: 16, paddingBottom: 32 },
+  scrollLoading: {
+    padding: 16,
+    paddingBottom: 32,
+    flexGrow: 1,
+  },
+  preview: {
+    width: '100%',
+    maxHeight: 280,
+    minHeight: 160,
+    backgroundColor: '#f1f5f9',
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  previewThumb: {
+    width: '100%',
+    maxHeight: 160,
+    minHeight: 100,
+    backgroundColor: '#f1f5f9',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  previewError: {
+    width: '100%',
+    maxHeight: 200,
+    backgroundColor: '#f1f5f9',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  loadingBlock: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
+    gap: 12,
+  },
   centered: {
     flex: 1,
     alignItems: 'center',

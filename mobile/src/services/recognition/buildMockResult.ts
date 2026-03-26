@@ -108,3 +108,13 @@ export function resolveMockScenario(
   }
   return buildMockResultForType(scenario);
 }
+
+/** Deterministický výběr ukázkového typu z URI (mock neanalyzuje pixely). */
+export function pickDocumentTypeFromUri(uri: string): DocumentType {
+  let h = 0;
+  for (let i = 0; i < uri.length; i++) {
+    h = (Math.imul(31, h) + uri.charCodeAt(i)) | 0;
+  }
+  const types: DocumentType[] = ['invoice', 'receipt', 'business_card'];
+  return types[Math.abs(h) % 3];
+}
