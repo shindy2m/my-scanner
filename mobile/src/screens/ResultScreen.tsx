@@ -9,9 +9,10 @@ import {
   Text,
   View,
 } from 'react-native';
+import { ScanResultContent } from '../components/ScanResultContent';
 import type { RootStackParamList } from '../navigation/types';
+import { MIN_TOUCH_TARGET } from '../theme/accessibility';
 import {
-  getStandardFieldDefinitions,
   mockRecognitionService,
   remapStandardFieldsForType,
   type RecognitionRequest,
@@ -104,9 +105,24 @@ export function ResultScreen({ route }: Props) {
             resizeMode="contain"
           />
         ) : null}
-        <View style={styles.loadingBlock}>
-          <ActivityIndicator size="large" />
-          <Text style={styles.muted}>Probíhá mock rozpoznání…</Text>
+        <View
+          style={styles.loadingCard}
+          accessible={true}
+          accessibilityRole="progressbar"
+          accessibilityLabel="Probíhá rozpoznání dokumentu, čekejte prosím"
+          accessibilityState={{ busy: true }}
+        >
+          <ActivityIndicator size="large" color="#1d4ed8" />
+          <Text style={styles.loadingTitle}>Zpracovává se dokument</Text>
+          <Text style={styles.loadingHint}>
+            Simulované rozpoznání běží na zařízení (ukázkový režim).
+          </Text>
+          <Text
+            style={styles.muted}
+            accessibilityLiveRegion="polite"
+          >
+            Čekejte prosím…
+          </Text>
         </View>
       </ScrollView>
     );
@@ -123,27 +139,18 @@ export function ResultScreen({ route }: Props) {
             resizeMode="contain"
           />
         ) : null}
-        <Text style={styles.error}>{error ?? 'Neznámá chyba'}</Text>
+        <Text style={styles.error} accessibilityRole="alert">
+          {error ?? 'Neznámá chyba'}
+        </Text>
       </View>
     );
   }
 
   const suggestedLabel = DOCUMENT_TYPE_LABELS[rawResult.suggestedType];
   const displayFields = remapStandardFieldsForType(rawResult, selectedType);
-  const fields = getStandardFieldDefinitions(selectedType);
-  const fullTranscript = rawResult.transcript.trim();
 
-  return (
-    <ScrollView contentContainerStyle={styles.scroll}>
-      {previewUri ? (
-        <Image
-          accessibilityLabel="Náhled vybraného dokumentu"
-          source={{ uri: previewUri }}
-          style={styles.previewThumb}
-          resizeMode="contain"
-        />
-      ) : null}
-
+  const beforeStandardFields = (
+    <>
       <Text style={styles.typeLine}>
         Návrh systému: <Text style={styles.bold}>{suggestedLabel}</Text>
         {rawResult.typeConfidence === 'low' ? (
@@ -177,31 +184,21 @@ export function ResultScreen({ route }: Props) {
           );
         })}
       </View>
+    </>
+  );
 
-      <Text style={styles.h2}>Standardní údaje</Text>
-      {fields.map(({ key, label }) => (
-        <View key={key} style={styles.row}>
-          <Text style={styles.label}>{label}</Text>
-          <Text style={styles.value}>
-            {displayFields[key]?.trim() ? displayFields[key] : '—'}
-          </Text>
-        </View>
-      ))}
-
-      <Text style={[styles.h2, styles.h2AfterFields]}>Kompletní přepis</Text>
-      <Text
-        style={styles.body}
-        accessibilityRole="text"
-        accessibilityLabel="Kompletní přepis dokumentu"
-      >
-        {fullTranscript ? rawResult.transcript : '—'}
-      </Text>
-    </ScrollView>
+  return (
+    <ScanResultContent
+      previewUri={previewUri}
+      beforeStandardFields={beforeStandardFields}
+      documentType={selectedType}
+      standardFields={displayFields}
+      transcript={rawResult.transcript}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { padding: 16, paddingBottom: 32 },
   scrollLoading: {
     padding: 16,
     paddingBottom: 32,
@@ -215,14 +212,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
   },
-  previewThumb: {
-    width: '100%',
-    maxHeight: 160,
-    minHeight: 100,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 8,
-    marginBottom: 16,
-  },
   previewError: {
     width: '100%',
     maxHeight: 200,
@@ -230,11 +219,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
   },
-  loadingBlock: {
+  loadingCard: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 24,
-    gap: 12,
+    paddingVertical: 28,
+    paddingHorizontal: 20,
+    gap: 10,
+    backgroundColor: '#f1f5f9',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  loadingTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0f172a',
+    textAlign: 'center',
+  },
+  loadingHint: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#475569',
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
   centered: {
     flex: 1,
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
     padding: 24,
     gap: 12,
   },
-  muted: { color: '#64748b', marginTop: 8 },
+  muted: { color: '#475569', marginTop: 4, fontSize: 15, fontWeight: '600' },
   error: { color: '#b91c1c', textAlign: 'center' },
   typeLine: { fontSize: 16, marginBottom: 12 },
   bold: { fontWeight: '700' },
@@ -255,23 +262,25 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   typeChip: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#94a3b8',
     backgroundColor: '#f8fafc',
     minWidth: '30%',
     flexGrow: 1,
     maxWidth: '100%',
+    minHeight: MIN_TOUCH_TARGET,
+    justifyContent: 'center',
   },
   typeChipSelected: {
     borderColor: '#0f172a',
     backgroundColor: '#e2e8f0',
   },
   typeChipText: {
-    fontSize: 13,
-    color: '#334155',
+    fontSize: 14,
+    color: '#1e293b',
     textAlign: 'center',
   },
   typeChipTextSel: { fontWeight: '700', color: '#0f172a' },
@@ -281,9 +290,4 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 10,
   },
-  h2AfterFields: { marginTop: 20 },
-  row: { marginBottom: 10 },
-  label: { fontSize: 12, color: '#64748b', marginBottom: 2 },
-  value: { fontSize: 16, color: '#0f172a' },
-  body: { fontSize: 15, lineHeight: 22, color: '#1e293b' },
 });

@@ -1,12 +1,14 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { PrivacyNotice } from '../components/PrivacyNotice';
 import {
   pickFromCamera,
   pickFromGallery,
   pickImageFile,
 } from '../input/pickDocumentImage';
 import type { RootStackParamList } from '../navigation/types';
+import { MIN_TOUCH_TARGET } from '../theme/accessibility';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -40,8 +42,10 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
       <Text style={styles.lead}>
-        Naskenujte nebo vyberte obrázek dokumentu — náhled a rozpoznání (mock) se spustí
-        automaticky.
+        Naskenujte nebo vyberte obrázek dokumentu (faktura, účtenka z obchodu nebo
+        vizitka). Po výběru uvidíte náhled a{' '}
+        <Text style={styles.leadStrong}>rozpoznání proběhne automaticky</Text>{' '}
+        (v této ukázce jde o simulaci na zařízení).
       </Text>
 
       <Pressable
@@ -52,6 +56,7 @@ export function HomeScreen({ navigation }: Props) {
         ]}
         disabled={busy}
         onPress={() => runPick(pickFromCamera)}
+        accessibilityHint="Otevře kameru a po snímku spustí rozpoznání"
       >
         <Text style={styles.primaryLabel}>Pořídit snímek kamerou</Text>
       </Pressable>
@@ -64,6 +69,7 @@ export function HomeScreen({ navigation }: Props) {
         ]}
         disabled={busy}
         onPress={() => runPick(pickFromGallery)}
+        accessibilityHint="Otevře galerii, po výběru obrázku spustí rozpoznání"
       >
         <Text style={styles.primaryLabel}>Vybrat z galerie</Text>
       </Pressable>
@@ -76,12 +82,19 @@ export function HomeScreen({ navigation }: Props) {
         ]}
         disabled={busy}
         onPress={() => runPick(pickImageFile)}
+        accessibilityHint="Otevře výběr souboru, po výběru obrázku spustí rozpoznání"
       >
         <Text style={styles.primaryLabel}>Vybrat obrázek ze souboru</Text>
       </Pressable>
 
       {busy ? (
-        <Text style={styles.busyHint}>Otevírám výběr…</Text>
+        <Text
+          style={styles.busyHint}
+          accessibilityLiveRegion="polite"
+          accessibilityLabel="Otevírám výběr, čekejte prosím"
+        >
+          Otevírám výběr…
+        </Text>
       ) : null}
 
       <View style={styles.divider} />
@@ -89,9 +102,13 @@ export function HomeScreen({ navigation }: Props) {
       <Pressable
         style={({ pressed }) => [styles.secondaryNav, pressed && styles.pressed]}
         onPress={() => navigation.navigate('History')}
+        accessibilityRole="button"
+        accessibilityLabel="Historie skenů v této relaci"
       >
         <Text style={styles.secondaryNavLabel}>Historie</Text>
       </Pressable>
+
+      <PrivacyNotice />
     </ScrollView>
   );
 }
@@ -105,17 +122,20 @@ const styles = StyleSheet.create({
   lead: {
     fontSize: 15,
     lineHeight: 22,
-    marginBottom: 8,
-    color: '#333',
+    marginBottom: 12,
+    color: '#1e293b',
   },
+  leadStrong: { fontWeight: '700', color: '#0f172a' },
   primary: {
-    backgroundColor: '#2563eb',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 10,
+    backgroundColor: '#1d4ed8',
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: MIN_TOUCH_TARGET,
   },
-  primaryLabel: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  primaryLabel: { color: '#ffffff', fontSize: 17, fontWeight: '600' },
   disabled: { opacity: 0.55 },
   busyHint: {
     fontSize: 13,
@@ -128,13 +148,15 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   secondaryNav: {
-    borderWidth: 1,
-    borderColor: '#2563eb',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#1d4ed8',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: MIN_TOUCH_TARGET,
   },
-  secondaryNavLabel: { fontSize: 16, fontWeight: '600', color: '#2563eb' },
+  secondaryNavLabel: { fontSize: 17, fontWeight: '600', color: '#1e40af' },
   pressed: { opacity: 0.85 },
 });

@@ -12,8 +12,8 @@
 | 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [x] |
 | 3 | Výsledek – pole a přepis | Standardní údaje, Kompletní přepis (jeden text), entita položky R10 a zápis do paměti relace | [x] |
 | 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [x] |
-| 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [ ] |
-| 6 | MVP demo – NFR | Loading, dotyk, kontrast, CS UI; text soukromí pro verzi s mockem | [ ] |
+| 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [x] |
+| 6 | MVP demo – NFR | Loading, dotyk, kontrast, CS UI; text soukromí pro verzi s mockem | [x] |
 | 7 | OpenAI a dokončení | Reálné API (R5–R7), klíč mimo produkční klient, finální NFR | [ ] |
 
 ---
@@ -79,31 +79,31 @@
 
 ## Etapa 5: Historie, filtry, mazání a náhledy
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** Seznam všech úspěšných skenů v relaci (např. od nejnovějšího), filtr podle typu nebo vše, smazání položky z paměti, detail se stejným obsahem jako po skenu; náhled vstupu; u obrázkového vstupu klepnutím zobrazení v originálním rozlišení. Žádné trvalé úložiště – v souladu se Scope (§ 2) a R16.
 - **Řešené requirements:** R13, R14, R15, R16, US-5; Scope – *ukládání dat pouze lokálně za běhu aplikace*
 - **Typy testů:** manuální, E2E (volitelně)
 - **Konkrétní testy:**
-  - [ ] Po několika skenech seznam odpovídá počtu položek a řazení (nejnovější první).
-  - [ ] Filtr zobrazí jen vybraný typ; „vše“ obnoví kompletní seznam.
-  - [ ] Z detailu je vidět náhled vstupu a stejné standardní údaje + přepis jako na výsledkové obrazovce.
-  - [ ] U položky z obrázku klepnutí na náhled otevře zobrazení v plném rozlišení.
-  - [ ] Smazání položky ji odstraní z runtime seznamu.
+  - [x] Po několika skenech seznam odpovídá počtu položek a řazení (nejnovější první). *(Implementace: `addScan` prepend; unit: zachování pořadí ve `filterSessionItems`.)*
+  - [x] Filtr zobrazí jen vybraný typ; „vše“ obnoví kompletní seznam. *(Unit: `filterSessionItems.test.ts`.)*
+  - [x] Z detailu je vidět náhled vstupu a stejné standardní údaje + přepis jako na výsledkové obrazovce. *(Sdílená komponenta `ScanResultContent`.)*
+  - [x] U položky z obrázku klepnutí na náhled otevře zobrazení v plném rozlišení. *(Obrazovka `FullImage` pro kamera/galerie/soubor s obrázkem.)*
+  - [x] Smazání položky ji odstraní z runtime seznamu. *( `removeScan` v kontextu + potvrzovací dialog v detailu.)*
 - **Poznámky / závislosti:** Závisí na E3 (struktura R10). *Poznámka k PRD:* R16 odkazuje na R17; v aktuálním PRD není R17 vyjmenováno – chování držet dle Scope a R16.
 
 ---
 
 ## Etapa 6: MVP připravené na demo (NFR pro ukázku)
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** UI vhodné pro předvedení stakeholderům: indikace průběhu během mock zpoždění, dostatečně velké primární akce a kontrast v souladu s platformou, české UI a názvy typů dle PRD; text o soukromí odpovídající stavu „simulované rozpoznání“ nebo krátká poznámka, že finální verze bude odesílat obsah ke zpracování (dokud není E7).
 - **Řešené requirements:** § 4 NFR – výkon (loading), přístupnost, lokalizace; část bezpečnosti/soukromí pro demo wording
 - **Typy testů:** manuální (checklist NFR), případně automatizované a11y nástroje
 - **Konkrétní testy:**
-  - [ ] Během mock „rozpoznání“ je uživateli zřejmé, že probíhá zpracování (loading / progress).
-  - [ ] Primární tlačítka a oblasti pro vstup a výběr typu splňují rozumnou velikost pro palec.
-  - [ ] UI a štítky typů dokumentů jsou v češtině dle PRD.
-  - [ ] Uživatel má k dispozici srozumitelný text o tom, jak se s jeho daty nakládá ve verzi demo vs. po zapnutí API (po E7 sjednotit s PRD § 4).
+  - [x] Během mock „rozpoznání“ je uživateli zřejmé, že probíhá zpracování (loading / progress). *(Karta + ActivityIndicator + texty, a11y `progressbar` / `busy`.)*
+  - [x] Primární tlačítka a oblasti pro vstup a výběr typu splňují rozumnou velikost pro palec. *(`MIN_TOUCH_TARGET` 48, domů + filtry + typ dokumentu.)*
+  - [x] UI a štítky typů dokumentů jsou v češtině dle PRD. *(Beze změny klíčů; doplněný úvodní text s názvy typů.)*
+  - [x] Uživatel má k dispozici srozumitelný text o tom, jak se s jeho daty nakládá ve verzi demo vs. po zapnutí API (po E7 sjednotit s PRD § 4). *(`PrivacyNotice` na domovské obrazovce.)*
 - **Poznámky / závislosti:** Prolíná s E1–E5; může běžet paralelně, ale před demem by měla být hotová.
 
 ---

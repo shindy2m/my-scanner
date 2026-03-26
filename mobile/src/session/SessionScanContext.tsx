@@ -22,6 +22,7 @@ type SessionScanContextValue = {
     id: string,
     patch: Partial<Pick<SessionScanItem, 'documentType' | 'standardFields'>>
   ) => void;
+  removeScan: (id: string) => void;
 };
 
 const SessionScanContext = createContext<SessionScanContextValue | null>(null);
@@ -47,9 +48,13 @@ export function SessionScanProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const removeScan = useCallback((id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
   const value = useMemo(
-    () => ({ items, addScan, updateScan }),
-    [items, addScan, updateScan]
+    () => ({ items, addScan, updateScan, removeScan }),
+    [items, addScan, updateScan, removeScan]
   );
 
   return (
