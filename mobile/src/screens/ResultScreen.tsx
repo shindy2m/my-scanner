@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,11 +13,19 @@ import type { RootStackParamList } from '../navigation/types';
 import {
   getStandardFieldDefinitions,
   mockRecognitionService,
+  remapStandardFieldsForType,
   type RecognitionRequest,
   type RecognitionResult,
 } from '../services/recognition';
 import { useSessionScans } from '../session/SessionScanContext';
+import type { DocumentType } from '../types/document';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
+
+const DOCUMENT_TYPES: DocumentType[] = [
+  'invoice',
+  'receipt',
+  'business_card',
+];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Result'>;
 
@@ -32,29 +41,36 @@ function buildRecognitionRequest(
 
 export function ResultScreen({ route }: Props) {
   const params = route.params;
-  const { addScan } = useSessionScans();
+  const { addScan, updateScan } = useSessionScans();
   const previewUri = params.uri;
   const runKey = recognitionParamKey(params);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<RecognitionResult | null>(null);
+  const [rawResult, setRawResult] = useState<RecognitionResult | null>(null);
+  const [selectedType, setSelectedType] = useState<DocumentType | null>(null);
+  const [currentScanId, setCurrentScanId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setRawResult(null);
+    setSelectedType(null);
+    setCurrentScanId(null);
     const request = buildRecognitionRequest(route.params);
     mockRecognitionService
       .recognize(request)
       .then((r) => {
         if (!cancelled) {
-          setResult(r);
-          addScan({
+          setRawResult(r);
+          setSelectedType(r.suggestedType);
+          const id = addScan({
             result: r,
             previewUri: params.uri,
             inputSource: params.source,
           });
+          setCurrentScanId(id);
         }
       })
       .catch(() => {
@@ -66,7 +82,16 @@ export function ResultScreen({ route }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [runKey, addScan]);
+  }, [runKey, addScan, params.uri, params.source]);
+
+  useEffect(() => {
+    if (!rawResult || !currentScanId || selectedType === null) return;
+    const fields = remapStandardFieldsForType(rawResult, selectedType);
+    updateScan(currentScanId, {
+      documentType: selectedType,
+      standardFields: fields,
+    });
+  }, [rawResult, currentScanId, selectedType, updateScan]);
 
   if (loading) {
     return (
@@ -87,7 +112,7 @@ export function ResultScreen({ route }: Props) {
     );
   }
 
-  if (error || !result) {
+  if (error || !rawResult || selectedType === null) {
     return (
       <View style={styles.centered}>
         {previewUri ? (
@@ -103,9 +128,10 @@ export function ResultScreen({ route }: Props) {
     );
   }
 
-  const typeLabel = DOCUMENT_TYPE_LABELS[result.suggestedType];
-  const fields = getStandardFieldDefinitions(result.suggestedType);
-  const fullTranscript = result.transcript.trim();
+  const suggestedLabel = DOCUMENT_TYPE_LABELS[rawResult.suggestedType];
+  const displayFields = remapStandardFieldsForType(rawResult, selectedType);
+  const fields = getStandardFieldDefinitions(selectedType);
+  const fullTranscript = rawResult.transcript.trim();
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
@@ -119,20 +145,45 @@ export function ResultScreen({ route }: Props) {
       ) : null}
 
       <Text style={styles.typeLine}>
-        Navržený typ: <Text style={styles.bold}>{typeLabel}</Text>
-        {result.typeConfidence === 'low' ? (
-          <Text style={styles.warn}> (nízká jistota)</Text>
+        Návrh systému: <Text style={styles.bold}>{suggestedLabel}</Text>
+        {rawResult.typeConfidence === 'low' ? (
+          <Text style={styles.warn}> (nízká jistota – zkontrolujte typ)</Text>
         ) : null}
       </Text>
+
+      <Text style={styles.h2}>Typ dokumentu</Text>
+      <View
+        style={styles.typeRow}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Výběr typu dokumentu"
+      >
+        {DOCUMENT_TYPES.map((t) => {
+          const selected = selectedType === t;
+          return (
+            <Pressable
+              key={t}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              onPress={() => setSelectedType(t)}
+              style={[styles.typeChip, selected && styles.typeChipSelected]}
+            >
+              <Text
+                style={[styles.typeChipText, selected && styles.typeChipTextSel]}
+                numberOfLines={2}
+              >
+                {DOCUMENT_TYPE_LABELS[t]}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
       <Text style={styles.h2}>Standardní údaje</Text>
       {fields.map(({ key, label }) => (
         <View key={key} style={styles.row}>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.value}>
-            {result.standardFields[key]?.trim()
-              ? result.standardFields[key]
-              : '—'}
+            {displayFields[key]?.trim() ? displayFields[key] : '—'}
           </Text>
         </View>
       ))}
@@ -143,7 +194,7 @@ export function ResultScreen({ route }: Props) {
         accessibilityRole="text"
         accessibilityLabel="Kompletní přepis dokumentu"
       >
-        {fullTranscript ? result.transcript : '—'}
+        {fullTranscript ? rawResult.transcript : '—'}
       </Text>
     </ScrollView>
   );
@@ -194,9 +245,36 @@ const styles = StyleSheet.create({
   },
   muted: { color: '#64748b', marginTop: 8 },
   error: { color: '#b91c1c', textAlign: 'center' },
-  typeLine: { fontSize: 16, marginBottom: 16 },
+  typeLine: { fontSize: 16, marginBottom: 12 },
   bold: { fontWeight: '700' },
   warn: { color: '#b45309' },
+  typeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  typeChip: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    backgroundColor: '#f8fafc',
+    minWidth: '30%',
+    flexGrow: 1,
+    maxWidth: '100%',
+  },
+  typeChipSelected: {
+    borderColor: '#0f172a',
+    backgroundColor: '#e2e8f0',
+  },
+  typeChipText: {
+    fontSize: 13,
+    color: '#334155',
+    textAlign: 'center',
+  },
+  typeChipTextSel: { fontWeight: '700', color: '#0f172a' },
   h2: {
     fontSize: 17,
     fontWeight: '700',

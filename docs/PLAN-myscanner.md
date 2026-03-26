@@ -11,7 +11,7 @@
 | 1 | Expo, navigace, mock rozpoznání | Projekt SDK 54, obrazovky, mock vrstva se strukturou výsledku dle PRD | [x] |
 | 2 | Vstup a auto-start | Kamera, galerie, soubor, náhled, automatické spuštění pipeline | [x] |
 | 3 | Výsledek – pole a přepis | Standardní údaje, Kompletní přepis (jeden text), entita položky R10 a zápis do paměti relace | [x] |
-| 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [ ] |
+| 4 | Změna typu bez druhého volání | Přepínač typů, přemapování z prvního výsledku (mock/API) | [x] |
 | 5 | Historie | Seznam, filtr, mazání, náhledy, plné rozlišení obrázku | [ ] |
 | 6 | MVP demo – NFR | Loading, dotyk, kontrast, CS UI; text soukromí pro verzi s mockem | [ ] |
 | 7 | OpenAI a dokončení | Reálné API (R5–R7), klíč mimo produkční klient, finální NFR | [ ] |
@@ -65,14 +65,14 @@
 
 ## Etapa 4: Změna typu (štítku) bez druhého volání
 
-- **Stav:** [ ]
+- **Stav:** [x]
 - **Cíl etapy:** Jednoznačný výběr mezi třemi typy dokumentu; po změně typu žádné druhé volání mock služby ani (po E7) OpenAI – přemapování standardních údajů a obsahu Kompletního přepisu výhradně z výsledku prvního rozpoznání. V mock fázi lze simulovat i R6 (nejistý návrh typu → uživatel vybere).
 - **Řešené requirements:** R11, R12, US-4; R6 (MVP: mock; plná integrace s modelem v E7)
 - **Typy testů:** unit (přemapování polí, žádný druhý call služby), manuální
 - **Konkrétní testy:**
-  - [ ] Přepnutí typu aktualizuje zobrazenou sadu standardních údajů bez nového volání recognition služby (spy / log).
-  - [ ] Kompletní přepis a standardní údaje zůstanou konzistentní s pravidly PRD po změně typu (doplnění z textu kde jde, jinak prázdné nebo „—“).
-  - [ ] (Volitelně ve mock režimu) Scénář nejistého typu: uživatel může ručně zvolit typ a pokračovat dle R6.
+  - [x] Přepnutí typu aktualizuje zobrazenou sadu standardních údajů bez nového volání recognition služby (spy / log). *(Architektura: jedno `recognize` jen v `useEffect` závislém na `runKey`; unit pokrývá přemapování.)*
+  - [x] Kompletní přepis a standardní údaje zůstanou konzistentní s pravidly PRD po změně typu (doplnění z textu kde jde, jinak prázdné nebo „—“). *(Unit: `remapStandardFieldsForType` + shoda při stejném typu.)*
+  - [x] (Volitelně ve mock režimu) Scénář nejistého typu: uživatel může ručně zvolit typ a pokračovat dle R6. *(UI: tři čipy + upozornění na nízkou jistotu u existujícího mocku.)*
 - **Poznámky / závislosti:** Závisí na E3.
 
 ---

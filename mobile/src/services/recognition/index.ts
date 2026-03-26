@@ -21,3 +21,4 @@ export {
   createMockRecognitionService,
   mockRecognitionService,
 } from './mockRecognitionService';
+export { remapStandardFieldsForType } from './remapStandardFieldsForType';

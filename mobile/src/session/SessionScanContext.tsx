@@ -17,7 +17,11 @@ type AddScanInput = {
 
 type SessionScanContextValue = {
   items: SessionScanItem[];
-  addScan: (input: AddScanInput) => void;
+  addScan: (input: AddScanInput) => string;
+  updateScan: (
+    id: string,
+    patch: Partial<Pick<SessionScanItem, 'documentType' | 'standardFields'>>
+  ) => void;
 };
 
 const SessionScanContext = createContext<SessionScanContextValue | null>(null);
@@ -25,13 +29,27 @@ const SessionScanContext = createContext<SessionScanContextValue | null>(null);
 export function SessionScanProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<SessionScanItem[]>([]);
 
-  const addScan = useCallback((input: AddScanInput) => {
-    setItems((prev) => [createSessionScanItem(input), ...prev]);
+  const addScan = useCallback((input: AddScanInput): string => {
+    const item = createSessionScanItem(input);
+    setItems((prev) => [item, ...prev]);
+    return item.id;
   }, []);
 
+  const updateScan = useCallback(
+    (
+      id: string,
+      patch: Partial<Pick<SessionScanItem, 'documentType' | 'standardFields'>>
+    ) => {
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+      );
+    },
+    []
+  );
+
   const value = useMemo(
-    () => ({ items, addScan }),
-    [items, addScan]
+    () => ({ items, addScan, updateScan }),
+    [items, addScan, updateScan]
   );
 
   return (
