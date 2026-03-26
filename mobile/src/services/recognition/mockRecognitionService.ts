@@ -2,6 +2,7 @@ import {
   pickDocumentTypeFromUri,
   resolveMockScenario,
 } from './buildMockResult';
+import { dequeueRecognitionMockQueueItem } from './e2eRecognitionHooks';
 import type { RecognitionRequest, RecognitionService } from './types';
 
 const MOCK_DELAY_MS = 400;
@@ -12,6 +13,13 @@ export function createMockRecognitionService(
   return {
     async recognize(request: RecognitionRequest) {
       await new Promise((r) => setTimeout(r, delayMs));
+      const queued = dequeueRecognitionMockQueueItem();
+      if (queued?.type === 'error') {
+        throw new Error(queued.message);
+      }
+      if (queued?.type === 'result') {
+        return resolveMockScenario(queued.scenario);
+      }
       const scenario =
         request.mockScenario ??
         (request.inputUri != null && request.inputUri.length > 0

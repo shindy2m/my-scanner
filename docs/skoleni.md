@@ -208,24 +208,24 @@ Tato kapitola ukazuje využití skillu **testing** (`.cursor/skills/testing/`).
 ### Prompt(y)
 
 ```
-Doplň do aplikace testy
+Připrav plán testů
 ```
 ```
-Implementuj smoke test
+Implementuj testy
 ```
 ```
-Implementuj testy historie
+Jak testy spustím?
 ```
 ```
-Implementuj zbývající testy
+Otevři mi playwright, chci vidět testy v jeho UI
 ```
 
 ### Postup
-1. **Zadej prompt** (`Doplň do aplikace testy`). Skill má opět pravidlo, že nejdřív se vytváří plán testů. Požadavek tedy nejdřív koriguje (nic neimplementuje) a vytvoří plán.
+1. **Zadej prompt** (`Připrav plán testů`). 
 2. **Zkontroluj plán** — Proveď kontrolu plánu a případné korekce. Struktura plánu podle `.cursor/skills/testing/reference.md`.
-3. **Kontrola pokrytí a krátká doporučení** — Agent zkontroluje konzistenci plán vs. PRD a do chatu přidá pár doporučení.
-4. **Spusť implementaci prvního testu** — Tím se odladí a odzkouší testovací prostředí.
-5. **Pokračuj s implementací dalších testů** — Základ je odzkoušený, teď už to můžeš nechat celé na agentovi.
+3. **Spusť implementaci testů**
+3. **Zeptej se jak testy spustit**
+4. **Zobraz si playwrite UI**
 
 ### Výstup
 
@@ -242,7 +242,7 @@ Implementuj zbývající testy
 
 ## Kapitola 7: Vytvoření vlastního skillu
 
-Vytvořit nový skill je triviální
+Nechej si skill vytvořit od AI a pak ho dolaď.
 
 ### Prompt(y)
 ```
