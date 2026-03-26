@@ -6,10 +6,11 @@ import {
   pickFromGallery,
   pickImageFile,
 } from '../input/pickDocumentImage';
-import type { RootStackParamList } from '../navigation/types';
+import type { HomeStackParamList } from '../navigation/types';
 import { MIN_TOUCH_TARGET } from '../theme/accessibility';
+import { j } from '../theme/jablotron';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
 
 export function HomeScreen({ navigation }: Props) {
   const [busy, setBusy] = useState(false);
@@ -43,7 +44,8 @@ export function HomeScreen({ navigation }: Props) {
       <Text style={styles.lead}>
         Vyberte doklad — fakturu, účtenku z obchodu nebo vizitku.
         {'\n\n'}
-        Můžete ho vyfotit, nahrát z galerie nebo ze souboru.
+        Můžete ho vyfotit, nahrát z galerie nebo ze souboru. Historii relace
+        otevřete v menu vpravo nahoře.
       </Text>
 
       <Image
@@ -102,71 +104,48 @@ export function HomeScreen({ navigation }: Props) {
           Otevírám výběr…
         </Text>
       ) : null}
-
-      <View style={styles.divider} />
-
-      <Pressable
-        style={({ pressed }) => [styles.secondaryNav, pressed && styles.pressed]}
-        onPress={() => navigation.navigate('History')}
-        accessibilityRole="button"
-        accessibilityLabel="Historie skenů v této relaci"
-      >
-        <Text style={styles.secondaryNavLabel}>Historie</Text>
-      </Pressable>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   scroll: {
-    padding: 20,
-    paddingBottom: 40,
-    gap: 12,
+    padding: j.space[5],
+    paddingBottom: j.space[10],
+    gap: j.space[3],
   },
   lead: {
-    fontSize: 15,
-    lineHeight: 22,
-    marginBottom: 12,
-    color: '#1e293b',
+    fontSize: j.font.sm + 1,
+    lineHeight: j.space[5],
+    marginBottom: j.space[3],
+    color: j.text.primary,
   },
   hero: {
     width: '100%',
     maxHeight: 200,
     minHeight: 140,
-    marginBottom: 8,
+    marginBottom: j.space[2],
     alignSelf: 'center',
   },
   primary: {
-    backgroundColor: '#1d4ed8',
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    borderRadius: 12,
+    backgroundColor: j.button.primary,
+    paddingVertical: j.space[4],
+    paddingHorizontal: j.space[4],
+    borderRadius: j.radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: MIN_TOUCH_TARGET,
   },
-  primaryLabel: { color: '#ffffff', fontSize: 17, fontWeight: '600' },
+  primaryLabel: {
+    color: j.text.primary,
+    fontSize: j.font.lg - 1,
+    fontWeight: j.weight.semibold,
+  },
   disabled: { opacity: 0.55 },
   busyHint: {
-    fontSize: 13,
-    color: '#64748b',
+    fontSize: j.font.sm - 1,
+    color: j.text.secondary,
     textAlign: 'center',
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#e2e8f0',
-    marginVertical: 8,
-  },
-  secondaryNav: {
-    borderWidth: 2,
-    borderColor: '#1d4ed8',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: MIN_TOUCH_TARGET,
-  },
-  secondaryNavLabel: { fontSize: 17, fontWeight: '600', color: '#1e40af' },
-  pressed: { opacity: 0.85 },
+  pressed: { backgroundColor: j.button.primaryPress },
 });

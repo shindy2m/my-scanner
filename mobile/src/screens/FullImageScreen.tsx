@@ -1,8 +1,7 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useWindowDimensions, Image, StyleSheet, View } from 'react-native';
-import type { RootStackParamList } from '../navigation/types';
+import { j } from '../theme/jablotron';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'FullImage'>;
+type Props = { route: { params: { uri: string } } };
 
 /** Náhled vstupu v plném rozlišení (R15) – bez umělého zmenšení výšky. */
 export function FullImageScreen({ route }: Props) {
@@ -24,7 +23,7 @@ export function FullImageScreen({ route }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: j.text.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

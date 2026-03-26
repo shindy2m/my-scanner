@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getStandardFieldDefinitions } from '../services/recognition';
+import { j } from '../theme/jablotron';
 import type { DocumentType } from '../types/document';
 
 type Props = {
@@ -76,25 +77,35 @@ export function ScanResultContent({
 }
 
 const styles = StyleSheet.create({
-  scroll: { padding: 16, paddingBottom: 32 },
+  scroll: { padding: j.space[4], paddingBottom: j.space[8] },
   previewThumb: {
     width: '100%',
     maxHeight: 160,
     minHeight: 100,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 8,
-    marginBottom: 16,
+    backgroundColor: j.bg.action,
+    borderRadius: j.radius.lg,
+    marginBottom: j.space[4],
   },
   h2: {
-    fontSize: 17,
-    fontWeight: '700',
-    marginTop: 8,
+    fontSize: j.font.lg - 1,
+    fontWeight: j.weight.bold,
+    marginTop: j.space[2],
     marginBottom: 10,
+    color: j.text.primary,
   },
-  h2AfterFields: { marginTop: 20 },
+  h2AfterFields: { marginTop: j.space[5] },
   row: { marginBottom: 10 },
-  label: { fontSize: 13, color: '#475569', marginBottom: 2, fontWeight: '500' },
-  value: { fontSize: 16, color: '#0f172a' },
-  body: { fontSize: 16, lineHeight: 24, color: '#1e293b' },
-  footerWrap: { marginTop: 28, paddingTop: 8 },
+  label: {
+    fontSize: j.font.sm - 1,
+    color: j.text.secondary,
+    marginBottom: 2,
+    fontWeight: j.weight.medium,
+  },
+  value: { fontSize: j.font.base, color: j.text.primary },
+  body: {
+    fontSize: j.font.base,
+    lineHeight: 24,
+    color: j.text.primary,
+  },
+  footerWrap: { marginTop: 28, paddingTop: j.space[2] },
 });

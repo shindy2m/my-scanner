@@ -1,0 +1,81 @@
+/** Design tokeny Jablotron (viz skill ui-designer-jablotron). */
+export const j = {
+  text: {
+    primary: '#212121',
+    secondary: '#454a54',
+    tertiary: '#7b7f93',
+    disabled: '#b4b3b3',
+    light: '#ffffff',
+    link: '#1aa9f5',
+    positive: '#64c315',
+    warning: '#ff8800',
+    negative: '#fb0a0a',
+  },
+  surface: {
+    base: '#ffffff',
+    disabled: '#e4e5e7',
+    gray: '#ecedee',
+  },
+  bg: {
+    default: '#f9f9f9',
+    action: '#f3f4f6',
+    info: '#e8f6fe',
+    positive: '#eff9e8',
+    negative: '#ffe6e6',
+    warning: '#fff3e5',
+  },
+  border: {
+    primary: '#e4e5e7',
+    light: '#f3f4f6',
+    action: '#b6b9ca',
+    selected: '#ffc300',
+  },
+  button: {
+    primary: '#ffc300',
+    primaryPress: '#fab400',
+    secondary: '#ecedee',
+    blue: '#1aa9f5',
+    white: '#ffffff',
+    negative: '#fb0a0a',
+  },
+  header: {
+    bar: '#fbc02d',
+    brandLight: '#f5f5f5',
+  },
+  space: {
+    1: 4,
+    2: 8,
+    3: 12,
+    4: 16,
+    5: 20,
+    6: 24,
+    8: 32,
+    10: 40,
+  },
+  radius: {
+    sm: 2,
+    rounded: 4,
+    md: 6,
+    lg: 8,
+    xl: 12,
+    xxl: 16,
+  },
+  font: {
+    xs: 12,
+    sm: 14,
+    base: 16,
+    lg: 18,
+    xl: 20,
+    xxl: 24,
+  },
+  weight: {
+    normal: '400' as const,
+    medium: '500' as const,
+    semibold: '600' as const,
+    bold: '700' as const,
+  },
+  /** Sladit s JablotronHeader: inner minHeight 48 + paddingBottom space[3]. */
+  layout: {
+    headerBelowSafeTop: 60,
+  },
+} as const;

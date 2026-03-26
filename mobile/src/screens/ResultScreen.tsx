@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { ScanResultContent } from '../components/ScanResultContent';
-import type { RootStackParamList } from '../navigation/types';
+import type { HomeStackParamList } from '../navigation/types';
 import {
   getConfiguredRecognitionService,
   getRecognitionBackend,
@@ -27,6 +27,7 @@ import { useSessionScans } from '../session/SessionScanContext';
 import type { DocumentType } from '../types/document';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
 import { MIN_TOUCH_TARGET } from '../theme/accessibility';
+import { j } from '../theme/jablotron';
 
 const DOCUMENT_TYPES: DocumentType[] = [
   'invoice',
@@ -34,14 +35,14 @@ const DOCUMENT_TYPES: DocumentType[] = [
   'business_card',
 ];
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Result'>;
+type Props = NativeStackScreenProps<HomeStackParamList, 'Result'>;
 
-function recognitionParamKey(params: RootStackParamList['Result']): string {
+function recognitionParamKey(params: HomeStackParamList['Result']): string {
   return `${params.uri}:${params.source}`;
 }
 
 function buildRecognitionRequest(
-  params: RootStackParamList['Result']
+  params: HomeStackParamList['Result']
 ): RecognitionRequest {
   return { inputUri: params.uri, inputSource: params.source };
 }
@@ -166,7 +167,7 @@ export function ResultScreen({ route, navigation }: Props) {
   if (consentPhase === 'loading') {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#1d4ed8" />
+        <ActivityIndicator size="large" color={j.button.blue} />
         <Text style={styles.muted}>Načítání…</Text>
       </View>
     );
@@ -240,7 +241,7 @@ export function ResultScreen({ route, navigation }: Props) {
           accessibilityLabel="Probíhá rozpoznání dokumentu, čekejte prosím"
           accessibilityState={{ busy: true }}
         >
-          <ActivityIndicator size="large" color="#1d4ed8" />
+          <ActivityIndicator size="large" color={j.button.blue} />
           <Text style={styles.loadingTitle}>Zpracovává se dokument</Text>
           <Text style={styles.loadingHint}>{loadingHint}</Text>
           <Text
@@ -348,121 +349,135 @@ export function ResultScreen({ route, navigation }: Props) {
 
 const styles = StyleSheet.create({
   scrollLoading: {
-    padding: 16,
-    paddingBottom: 32,
+    padding: j.space[4],
+    paddingBottom: j.space[8],
     flexGrow: 1,
   },
   preview: {
     width: '100%',
     maxHeight: 280,
     minHeight: 160,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 8,
-    marginBottom: 20,
+    backgroundColor: j.bg.action,
+    borderRadius: j.radius.lg,
+    marginBottom: j.space[5],
   },
   previewError: {
     width: '100%',
     maxHeight: 200,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 8,
-    marginBottom: 16,
+    backgroundColor: j.bg.action,
+    borderRadius: j.radius.lg,
+    marginBottom: j.space[4],
   },
   loadingCard: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 28,
-    paddingHorizontal: 20,
+    paddingHorizontal: j.space[5],
     gap: 10,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 12,
+    backgroundColor: j.bg.action,
+    borderRadius: j.radius.xl,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: j.border.primary,
   },
   consentCard: {
     padding: 18,
     gap: 14,
-    backgroundColor: '#f8fafc',
-    borderRadius: 12,
+    backgroundColor: j.surface.base,
+    borderRadius: j.radius.xl,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: j.border.primary,
   },
   consentTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontSize: j.font.lg,
+    fontWeight: j.weight.bold,
+    color: j.text.primary,
   },
   consentBody: {
-    fontSize: 15,
+    fontSize: j.font.sm + 1,
     lineHeight: 22,
-    color: '#334155',
+    color: j.text.secondary,
   },
   primaryBtn: {
     minHeight: MIN_TOUCH_TARGET,
-    borderRadius: 10,
-    backgroundColor: '#1d4ed8',
+    borderRadius: j.radius.lg,
+    backgroundColor: j.button.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: j.space[4],
   },
-  primaryBtnPressed: { opacity: 0.88 },
+  primaryBtnPressed: { backgroundColor: j.button.primaryPress },
   primaryBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
+    color: j.text.primary,
+    fontSize: j.font.base,
+    fontWeight: j.weight.bold,
   },
   secondaryBtn: {
     minHeight: MIN_TOUCH_TARGET,
-    borderRadius: 10,
+    borderRadius: j.radius.lg,
     borderWidth: 2,
-    borderColor: '#94a3b8',
+    borderColor: j.border.action,
+    backgroundColor: j.button.secondary,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: j.space[4],
   },
   secondaryBtnPressed: { opacity: 0.88 },
   secondaryBtnText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1e293b',
+    fontSize: j.font.base,
+    fontWeight: j.weight.semibold,
+    color: j.text.primary,
   },
   loadingTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontSize: j.font.lg,
+    fontWeight: j.weight.bold,
+    color: j.text.primary,
     textAlign: 'center',
   },
   loadingHint: {
-    fontSize: 14,
+    fontSize: j.font.sm,
     lineHeight: 20,
-    color: '#475569',
+    color: j.text.secondary,
     textAlign: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: j.space[2],
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    gap: 12,
+    padding: j.space[6],
+    gap: j.space[3],
   },
-  muted: { color: '#475569', marginTop: 4, fontSize: 15, fontWeight: '600' },
-  error: { color: '#b91c1c', textAlign: 'center', marginBottom: 4 },
-  typeLine: { fontSize: 16, marginBottom: 12 },
-  bold: { fontWeight: '700' },
-  warn: { color: '#b45309' },
+  muted: {
+    color: j.text.secondary,
+    marginTop: j.space[1],
+    fontSize: j.font.sm + 1,
+    fontWeight: j.weight.semibold,
+  },
+  error: {
+    color: j.text.negative,
+    textAlign: 'center',
+    marginBottom: j.space[1],
+  },
+  typeLine: {
+    fontSize: j.font.base,
+    marginBottom: j.space[3],
+    color: j.text.primary,
+  },
+  bold: { fontWeight: j.weight.bold },
+  warn: { color: j.text.warning },
   typeRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 8,
+    gap: j.space[2],
+    marginBottom: j.space[2],
   },
   typeChip: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingVertical: j.space[3],
+    paddingHorizontal: j.space[3],
+    borderRadius: j.radius.lg,
     borderWidth: 2,
-    borderColor: '#94a3b8',
-    backgroundColor: '#f8fafc',
+    borderColor: j.border.action,
+    backgroundColor: j.surface.gray,
     minWidth: '30%',
     flexGrow: 1,
     maxWidth: '100%',
@@ -470,19 +485,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   typeChipSelected: {
-    borderColor: '#0f172a',
-    backgroundColor: '#e2e8f0',
+    borderColor: j.border.selected,
+    backgroundColor: j.bg.warning,
   },
   typeChipText: {
-    fontSize: 14,
-    color: '#1e293b',
+    fontSize: j.font.sm,
+    color: j.text.primary,
     textAlign: 'center',
   },
-  typeChipTextSel: { fontWeight: '700', color: '#0f172a' },
+  typeChipTextSel: { fontWeight: j.weight.bold, color: j.text.primary },
   h2: {
-    fontSize: 17,
-    fontWeight: '700',
-    marginTop: 8,
+    fontSize: j.font.lg - 1,
+    fontWeight: j.weight.bold,
+    marginTop: j.space[2],
     marginBottom: 10,
+    color: j.text.primary,
   },
 });

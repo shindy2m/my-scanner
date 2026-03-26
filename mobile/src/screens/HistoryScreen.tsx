@@ -8,16 +8,17 @@ import {
   Text,
   View,
 } from 'react-native';
-import type { RootStackParamList } from '../navigation/types';
+import type { HistoryStackParamList } from '../navigation/types';
 import {
   filterSessionItems,
   type HistoryFilter,
 } from '../session/filterSessionItems';
 import { useSessionScans } from '../session/SessionScanContext';
 import { MIN_TOUCH_TARGET } from '../theme/accessibility';
+import { j } from '../theme/jablotron';
 import { DOCUMENT_TYPE_LABELS } from '../types/document';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
+type Props = NativeStackScreenProps<HistoryStackParamList, 'History'>;
 
 const FILTER_CHIPS: { key: HistoryFilter; label: string }[] = [
   { key: 'all', label: 'Vše' },
@@ -129,61 +130,83 @@ export function HistoryScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, padding: 20, justifyContent: 'center' },
-  scroll: { padding: 16, paddingBottom: 32 },
-  title: { fontSize: 18, fontWeight: '600', marginBottom: 8 },
-  caption: { fontSize: 14, color: '#475569', marginBottom: 12 },
-  text: { fontSize: 15, lineHeight: 22, color: '#475569' },
+  box: { flex: 1, padding: j.space[5], justifyContent: 'center' },
+  scroll: { padding: j.space[4], paddingBottom: j.space[8] },
+  title: {
+    fontSize: j.font.lg,
+    fontWeight: j.weight.semibold,
+    marginBottom: j.space[2],
+    color: j.text.primary,
+  },
+  caption: {
+    fontSize: j.font.sm,
+    color: j.text.secondary,
+    marginBottom: j.space[3],
+  },
+  text: {
+    fontSize: j.font.sm + 1,
+    lineHeight: 22,
+    color: j.text.secondary,
+  },
   filterLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#475569',
-    marginBottom: 8,
+    fontSize: j.font.sm - 1,
+    fontWeight: j.weight.semibold,
+    color: j.text.secondary,
+    marginBottom: j.space[2],
   },
   filterRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
+    gap: j.space[2],
+    marginBottom: j.space[4],
   },
   filterChip: {
     paddingVertical: 10,
     paddingHorizontal: 14,
-    borderRadius: 10,
+    borderRadius: j.radius.lg,
     borderWidth: 2,
-    borderColor: '#94a3b8',
-    backgroundColor: '#f8fafc',
+    borderColor: j.border.action,
+    backgroundColor: j.surface.gray,
     minHeight: MIN_TOUCH_TARGET,
     justifyContent: 'center',
   },
   filterChipSelected: {
-    borderColor: '#0f172a',
-    backgroundColor: '#e2e8f0',
+    borderColor: j.border.selected,
+    backgroundColor: j.bg.warning,
   },
-  filterChipText: { fontSize: 14, color: '#1e293b' },
-  filterChipTextSel: { fontWeight: '700', color: '#0f172a' },
+  filterChipText: { fontSize: j.font.sm, color: j.text.primary },
+  filterChipTextSel: { fontWeight: j.weight.bold, color: j.text.primary },
   emptyFilter: {
-    fontSize: 14,
-    color: '#64748b',
-    marginBottom: 12,
+    fontSize: j.font.sm,
+    color: j.text.tertiary,
+    marginBottom: j.space[3],
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: j.surface.base,
+    borderRadius: j.radius.lg,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 12,
-    marginBottom: 12,
+    borderColor: j.border.primary,
+    padding: j.space[3],
+    marginBottom: j.space[3],
   },
   cardPressed: { opacity: 0.92 },
   thumb: {
     width: '100%',
     height: 100,
-    borderRadius: 6,
-    backgroundColor: '#f1f5f9',
+    borderRadius: j.radius.md,
+    backgroundColor: j.bg.action,
     marginBottom: 10,
   },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#0f172a' },
-  meta: { fontSize: 12, color: '#64748b', marginTop: 4 },
-  previewText: { fontSize: 14, color: '#334155', marginTop: 8, lineHeight: 20 },
+  cardTitle: {
+    fontSize: j.font.base,
+    fontWeight: j.weight.bold,
+    color: j.text.primary,
+  },
+  meta: { fontSize: j.font.xs, color: j.text.tertiary, marginTop: j.space[1] },
+  previewText: {
+    fontSize: j.font.sm,
+    color: j.text.secondary,
+    marginTop: j.space[2],
+    lineHeight: 20,
+  },
 });
