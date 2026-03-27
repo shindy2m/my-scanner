@@ -40,7 +40,8 @@ Uživatel může chtít hybrid (např. „nejdřív feasibility pro API, pak MVP
 ### Krok 1: Doporučení strategie a seznam etap
 
 - Načti PRD projektu. Je-li PRDů víc, zeptej se který použít. **Chybí-li PRD,** upozorni uživatele a doporuč mu, aby začal vytvořením PRD (např. pomocí skillu product-requirements); bez PRD nepokračuj.
-- **Doporuč vhodnou strategii** na základě obsahu PRD a tabulky strategií výše (stručně zdůvodni, proč tato strategie).
+- **Doporuč vhodnou strategii** na základě obsahu PRD a tabulky strategií výše (stručně zdůvodni, proč tato strategie). 
+- nabídni možnost strategii upravit
 - Na základě doporučené strategie a PRD vytvoř **seznam etap**. **Neuváděj etapy v tabulce:** každou etapu uveď jako nadpis (např. **E1: Název etapy**) a pod ním na další řádek cíl etapy (detail v jedné větě nebo krátkém odstavci).
 - Nabídni iteraci: „Chceš něco přidat, odebrat nebo změnit pořadí?“
 

@@ -59,17 +59,19 @@ Minimální sada tokenů (barvy, mezery, typografie, ohraničení) a UX pravidla
 
 ---
 
-## Menu (hamburger / boční panel) — UX
+## Menu (hamburger) — UX
 
 - **Účel:** Sekundární navigace, nastavení, nápověda, odhlášení a další akce, které nepatří do hlavních oblastí aplikace.
-- **Povinně:** V menu **vždy zobrazit informaci o verzi aplikace** (např. „Verze 1.2.3“ nebo „v1.2.3“), typicky v dolní části menu nebo u patičky panelu, aby byl uživatel mohl identifikovat build při hlášení chyb nebo při podpoře.
+- **Povinně:** V menu **vždy zobrazit informaci o verzi aplikace** (např. „Verze 1.2.3“ nebo „v1.2.3“), typicky v dolní části menu, oddělené linkou.
+- **Vzhled:** Bublina pod hamburgerem.
+- **Výška:** Tak, aby se všly všechny položky menu.
 
 ---
 
 ## Spodní tab bar — UX a vzhled
 
-- **Účel (UX):** Hlavní navigace mezi **primárními oblastmi aplikace** (hlavní obrazovky, sekce). Tab bar slouží k přepínání kontextu (např. Akce / Historie / Nastavení), ne k jednorázovým akcím. Počet položek typicky 2–5; každá položka = jedna hlavní oblast. Tab bar zůstává viditelný a dostupný napříč těmito oblastmi (persistentní primary navigation).
-- **Vzhled:** Pozadí `surfaceBase` (bílá). Horní okraj: `borderPrimary`. Bez stínu (elevation 0, shadowOpacity 0).
+- **Účel (UX):** Hlavní navigace mezi **primárními oblastmi aplikace** (hlavní obrazovky, sekce). Musí se vždy použít. Tab bar slouží k přepínání kontextu (např. Akce / Historie / Nastavení), ne k jednorázovým akcím. Počet položek typicky 2–5; každá položka = jedna hlavní oblast. Tab bar zůstává viditelný a dostupný napříč těmito oblastmi (persistentní primary navigation).
+- **Vzhled:** Pozadí `surfaceBase` (bílá). Horní okraj: `borderPrimary`. Bez stínu (elevation 0, shadowOpacity 0). 
 - **Položky:** Ikona nad textem (below-icon). **Aktivní** oblast: `buttonPrimary` (žlutá). **Neaktivní:** `textSecondary` (šedá). Vždy zřetelně rozlišit aktivní položku.
 - **Výška:** Obsah tab baru cca 72px. Safe area dole respektovat (paddingBottom = bottom inset); stejný prostor nad ikonami (paddingTop) pro výškovou symetrii.
 
