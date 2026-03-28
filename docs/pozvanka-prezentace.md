@@ -23,6 +23,8 @@ zvu tě na **prezentaci** (spíš než klasické školení), **trvá cca 90 minu
 - **Jak řídit výstup AI** — např. aby UI a UX odpovídaly Jablotronnímu vzhledu (skill v akci).
 - **Jak se napojit na OpenAI API** — konfigurace, bezpečné uložení klíče, volání z kódu.
 
+![MySCANNER — ukázka toku v aplikaci (snímek, zpracování, údaje, historie, detail)](./MySCANNER.png)
+
 **Pro koho**
 - Pro každého, kdo používá nebo chce zkusit Cursor a rád by měl přehled o skills, rules a opakovatelných postupech s AI.
 
